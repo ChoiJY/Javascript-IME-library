@@ -36,7 +36,7 @@
                      '9',    '',    '',
                      'DELETE','ENTER','CLOSE'];
 
-    var qwerty =    [['`','~','1','!','2','@','3','#','4','$','5','%','6','^','7','&','8','*','9','(','0',')','-','_','=','+','','','DELETE'],
+    var qwerty =    [['`','~','1','!','2','@','3','#','4','$','5','%','6','^','7','\&','8','*','9','(','0',')','-','_','=','+','','','DELETE'],
                     ['q','Q','w','W','e','E','r','R','t','T','y','Y','u','U','i','I','o','O','p','P','[','{',']','}','\\','|','','','TAB'],
                     ['a','A','s','S','d','D','f','F','g','G','h','H','j','J','k','K','l','L',';',':','\'','"','','','ENTER'],
                     ['z','Z','x','X','c','C','v','V','b','B','n','N','m','M',',','\<','.','\>','/','?','','','SHIFT','SPACE']];
@@ -329,8 +329,8 @@
         // input keyboard event
         $('.keyboard li').click(function () {
             var $this = $(this),
-                character = $this.html();
-
+                character = $this.text();
+                console.log(character)
             if($this.hasClass('shift')){
                 $('.symbol.k').toggleClass('uppercase');
                 $('.symbol.k span').toggle();
@@ -348,11 +348,12 @@
             if ($this.hasClass('tab'))  character= "\t";
             if ($this.hasClass('space')) character = " ";
             if ($this.hasClass('enter')) character = "\n";
-
+            //character.replace(/&amp;/, '&').replace(/&lt;/,'<').replace(/&gt;/,'>');
             // Add the character
-            $('.originalField').val($('.originalField').val() + character);
+            $('.originalField').val($('.originalField').val() + character.replace(/&amp;/g, '&').replace(/&lt;/,'<').replace(/&gt;/,'>'));
+            console.log($('.originalField').val());
         });
 
     });
-    
+
 })(jQuery);
