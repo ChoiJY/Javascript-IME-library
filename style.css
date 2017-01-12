@@ -1,0 +1,148 @@
+body{
+    width: 100%;
+    height: 100%;
+    background: aliceblue;
+}
+
+form{
+    height: 5%;
+}
+
+.testView {
+    border: 3px ridge;
+    padding: 5px;
+    margin : auto;
+}
+
+.Screen{
+    margin: 100px auto;
+    display: table;
+    background: ghostwhite ;
+    border: thick;
+    padding: 10%;
+}
+
+.keyboard {
+    margin-left: 10%;
+    width: 70%;
+    height: 300px;
+    list-style: none;
+    text-align: center;
+    -moz-border-radius: 5%;
+    -webkit-border-radius: 5%;
+}
+
+.symbol{
+    float: left;
+    margin: 0 1% 1% 0;
+    width: 4.5%;
+    height: 40px;
+    line-height: 40px;
+    background: #fff;
+    border: 1px ridge black;
+    font-size: 12px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+}
+
+.symbol.del{
+    width: 15%;
+}
+
+.symbol.tab{
+    width: 15%;
+}
+
+.symbol.enter{
+    margin-left: 0%;
+    width: 27%;
+}
+
+.symbol.shift{
+    width: 33%;
+}
+.symbol.space{
+    width: 98%;
+}
+
+.keyboard .letter{
+    float: left;
+    margin: 0 1% 1% 0;
+    width: 6.5%;
+    height: 40px;
+    line-height: 40px;
+    background: #fff;
+    border: 1px ridge black;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+}
+
+.keyboard .letter.line2{
+   margin: 0 1.7% 1% 0;
+}
+
+.keyboard .letter.line3{
+    margin: 0 3.5% 1% 0;
+}
+
+.keyboard .letter.del{
+    margin-left: 0.1%;
+    width: 10%;
+    clear: right;
+    font-size: 12px;
+}
+
+.keyboard .letter.enter{
+    margin-right: 0%;
+    margin-left: 1%;
+    width: 10%;
+    font-size: 12px;
+}
+
+.keyboard .letter.shift{
+    margin-right: 0%;
+    margin-left: 1.1%;
+    width: 13%;
+    font-size: 12px;
+}
+
+.keyboard .letter.space{
+    width: 97.5%;
+}
+
+.number{
+    float: left;
+    margin: 0 1% 1% 0;
+    width: 25%;
+    height: 50px;
+    line-height: 50px;
+    background: white;
+    border: 1px ridge black;
+    font-size: 20px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+}
+
+.keyboard .number .del {
+    clear: right;
+}
+
+.keyboard .number .enter {
+    clear: right;
+}
+
+.uppercase {
+    text-transform: uppercase;
+}
+
+.on {
+    display: none;
+}
+
+.keyboard li:hover {
+    position: relative;
+    top: 1px;
+    left: 1px;
+    border-color: black;
+    cursor: pointer;
+}

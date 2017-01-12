@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>testDoc</title>
+    <link rel="stylesheet" type="text/css" href="style.css"/>
+</head>
+<body>
+
+<div class="Screen">
+
+    <textarea class = "tv" rows="8" cols="30" readonly="readonly"></textarea>
+
+    <div class="testView">
+        <form class="input1" method="post">
+            <label for="name">이름 :</label>
+                <input class="nameField" type="text" id="name"/>
+            <label for="pwd">비밀번호 :</label>
+                <input class="pwdField" type="password" id="pwd"/>
+            <label for="mobileTest">숫자 키보드 테스트 :</label>
+                <input class="originalField" type="text" id="mobileTest"/>
+        </form>
+    </div>
+
+    <ul class="keyboard"></ul>
+
+</div>
+
+<script type='text/javascript' src='http://code.jquery.com/jquery-latest.min.js'></script>
+<script type='text/javascript' src='js/jquery.secureKeyboard.js'></script>
+
+</body>
+</html>
