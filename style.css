@@ -1,3 +1,4 @@
+
 body{
     width: 100%;
     height: 100%;
@@ -15,120 +16,20 @@ form{
 }
 
 .Screen{
-    margin: 100px auto;
+    width: 80%;
+    margin: 10% auto;
     display: table;
     background: ghostwhite ;
-    border: thick;
-    padding: 10%;
+    padding: 2%;
 }
 
 .keyboard {
-    margin-left: 10%;
-    width: 70%;
-    height: 300px;
+    width: 100%;
+    height: 250px;
     list-style: none;
     text-align: center;
     -moz-border-radius: 5%;
     -webkit-border-radius: 5%;
-}
-
-.symbol{
-    float: left;
-    margin: 0 1% 1% 0;
-    width: 4.5%;
-    height: 40px;
-    line-height: 40px;
-    background: #fff;
-    border: 1px ridge black;
-    font-size: 12px;
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
-}
-
-.symbol.del{
-    width: 15%;
-}
-
-.symbol.tab{
-    width: 15%;
-}
-
-.symbol.enter{
-    margin-left: 0%;
-    width: 27%;
-}
-
-.symbol.shift{
-    width: 33%;
-}
-.symbol.space{
-    width: 98%;
-}
-
-.keyboard .letter{
-    float: left;
-    margin: 0 1% 1% 0;
-    width: 6.5%;
-    height: 40px;
-    line-height: 40px;
-    background: #fff;
-    border: 1px ridge black;
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
-}
-
-.keyboard .letter.line2{
-   margin: 0 1.7% 1% 0;
-}
-
-.keyboard .letter.line3{
-    margin: 0 3.5% 1% 0;
-}
-
-.keyboard .letter.del{
-    margin-left: 0.1%;
-    width: 10%;
-    clear: right;
-    font-size: 12px;
-}
-
-.keyboard .letter.enter{
-    margin-right: 0%;
-    margin-left: 1%;
-    width: 10%;
-    font-size: 12px;
-}
-
-.keyboard .letter.shift{
-    margin-right: 0%;
-    margin-left: 1.1%;
-    width: 13%;
-    font-size: 12px;
-}
-
-.keyboard .letter.space{
-    width: 97.5%;
-}
-
-.number{
-    float: left;
-    margin: 0 1% 1% 0;
-    width: 25%;
-    height: 50px;
-    line-height: 50px;
-    background: white;
-    border: 1px ridge black;
-    font-size: 20px;
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
-}
-
-.keyboard .number .del {
-    clear: right;
-}
-
-.keyboard .number .enter {
-    clear: right;
 }
 
 .uppercase {
@@ -145,4 +46,557 @@ form{
     left: 1px;
     border-color: black;
     cursor: pointer;
+}
+
+@media screen and (min-width: 375px){
+    .symbol{
+        float: left;
+        margin: 0 1% 1% 0;
+        width: 4.5%;
+        height: 40px;
+        line-height: 40px;
+        background: #fff;
+        border: 1px ridge black;
+        font-size: 12px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+
+    .symbol.del ,.symbol.tab{
+        width: 11.5%;
+    }
+
+    .symbol.enter{
+        margin-left: 0%;
+        width: 23.8%;
+    }
+
+    .symbol.shift{
+        margin-right:0%;
+        width: 30%;
+    }
+    .keyboard .symbol.space{
+        margin-right: 0%;
+        width: 97%;
+    }
+
+    .keyboard .letter{
+        float: left;
+        margin: 0 1% 1% 0;
+        width: 6%;
+        height: 40px;
+        line-height: 40px;
+        background: #fff;
+        border: 1px ridge black;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+
+    .keyboard .letter.line2{
+        margin: 0 1.7% 1% 0;
+    }
+
+    .keyboard .letter.line3{
+        margin: 0 3.5% 1% 0;
+    }
+
+    .keyboard .letter.del{
+        margin-left: 0.1%;
+        margin-right: 0%;
+        width: 13%;
+        font-size: 12px;
+    }
+
+    .keyboard .letter.enter{
+        margin-right: 0%;
+        margin-left: 1%;
+        width: 13%;
+        font-size: 12px;
+    }
+
+    .keyboard .letter.shift{
+        margin-right: 0%;
+        margin-left: 3%;
+        width: 13%;
+        font-size: 12px;
+    }
+
+    .keyboard .letter.space{
+        margin-right: 0%;
+        width: 97.5%;
+    }
+
+    .number{
+        float: left;
+        margin: 0 1% 1% 0;
+        width: 30%;
+        height: 50px;
+        line-height: 50px;
+        background: white;
+        border: 1px ridge black;
+        font-size: 20px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+}
+
+@media screen and (max-width:374px) {
+    .symbol{
+        float: left;
+        margin: 0 1% 1% 0;
+        width: 4.5%;
+        height: 40px;
+        line-height: 40px;
+        background: #fff;
+        border: 1px ridge black;
+        font-size: 12px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+
+    .symbol.del ,.symbol.tab{
+        width: 10%;
+    }
+
+    .symbol.enter{
+        margin-left: 0%;
+        width: 22.5%;
+    }
+
+    .symbol.shift{
+        margin-right:0%;
+        width: 28.5%;
+    }
+    .keyboard .symbol.space{
+        margin-right: 0%;
+        width: 97.5%;
+    }
+
+    .keyboard .letter{
+        float: left;
+        margin: 0 1% 1% 0;
+        width: 6%;
+        height: 40px;
+        line-height: 40px;
+        background: #fff;
+        border: 1px ridge black;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+
+    .keyboard .letter.line2{
+        margin: 0 1.7% 1% 0;
+    }
+
+    .keyboard .letter.line3{
+        margin: 0 3.5% 1% 0;
+    }
+
+    .keyboard .letter.del{
+        margin-left: 0.1%;
+        margin-right: 0%;
+        width: 12%;
+        font-size: 12px;
+    }
+
+    .keyboard .letter.enter{
+        margin-right: 0%;
+        margin-left: 0%;
+        width: 13%;
+        font-size: 12px;
+    }
+
+    .keyboard .letter.shift{
+        margin-right: 0%;
+        margin-left: 0%;
+        width: 15.5%;
+        font-size: 12px;
+    }
+
+    .keyboard .letter.space{
+        margin-right: 0%;
+        width: 97.5%;
+    }
+
+    .number{
+        float: left;
+        margin: 0 1% 1% 0;
+        width: 30%;
+        height: 50px;
+        line-height: 50px;
+        background: white;
+        border: 1px ridge black;
+        font-size: 20px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+}
+
+@media screen and (min-width:425px) {
+    .symbol{
+        float: left;
+        margin: 0 1% 1% 0;
+        width: 4.5%;
+        height: 40px;
+        line-height: 40px;
+        background: #fff;
+        border: 1px ridge black;
+        font-size: 12px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+
+    .symbol.del ,.symbol.tab {
+        width: 12.3%;
+    }
+    .symbol.enter{
+        margin-left: 0%;
+        width: 24.5%;
+    }
+
+    .symbol.shift{
+        margin-right:0%;
+        width: 30.5%;
+    }
+    .keyboard .symbol.space{
+        margin-right: 0%;
+        width: 97.5%;
+    }
+
+    .keyboard .letter{
+        float: left;
+        margin: 0 1% 1% 0;
+        width: 6%;
+        height: 40px;
+        line-height: 40px;
+        background: #fff;
+        border: 1px ridge black;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+
+    .keyboard .letter.line2{
+        margin: 0 1.7% 1% 0;
+    }
+
+    .keyboard .letter.line3{
+        margin: 0 3.5% 1% 0;
+    }
+
+    .keyboard .letter.del{
+        margin-left: 1%;
+        margin-right: 0%;
+        width: 12.8%;
+        font-size: 12px;
+    }
+
+    .keyboard .letter.enter{
+        margin-right: 0%;
+        margin-left: 1.5%;
+        width: 13%;
+        font-size: 12px;
+    }
+
+    .keyboard .letter.shift{
+        margin-right: 0%;
+        margin-left: 0%;
+        width: 16.5%;
+        font-size: 12px;
+    }
+
+    .keyboard .letter.space{
+        margin-right: 0%;
+        width: 97.3%;
+    }
+
+    .number{
+        float: left;
+        margin: 0 1% 1% 0;
+        width: 30%;
+        height: 50px;
+        line-height: 50px;
+        background: white;
+        border: 1px ridge black;
+        font-size: 20px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+}
+
+@media screen and (min-width:768px) {
+    .symbol{
+        float: left;
+        margin: 0 1% 1% 0;
+        width: 4.5%;
+        height: 40px;
+        line-height: 40px;
+        background: #fff;
+        border: 1px ridge black;
+        font-size: 15px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+
+    .symbol.del ,.symbol.tab {
+        width: 16%;
+    }
+    .symbol.enter{
+        margin-left: 0%;
+        width: 27.7%;
+    }
+
+    .symbol.shift{
+        margin-right:0%;
+        width: 33.5%;
+    }
+    .keyboard .symbol.space{
+        margin-right: 0%;
+        width: 97.5%;
+    }
+
+    .keyboard .letter{
+        float: left;
+        margin: 0 1% 1% 0;
+        width: 6%;
+        height: 40px;
+        line-height: 40px;
+        background: #fff;
+        border: 1px ridge black;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+
+    .keyboard .letter.line2{
+        margin: 0 1.7% 1% 0;
+    }
+
+    .keyboard .letter.line3{
+        margin: 0 3.5% 1% 0;
+    }
+
+    .keyboard .letter.del{
+        margin-left: 1%;
+        margin-right: 0%;
+        width: 15%;
+        font-size: 16px;
+    }
+
+    .keyboard .letter.enter{
+        margin-right: 0%;
+        margin-left: 1.4%;
+        width: 15%;
+        font-size: 16px;
+    }
+
+    .keyboard .letter.shift{
+        margin-right: 0%;
+        margin-left: 0%;
+        width: 18%;
+        font-size: 16px;
+    }
+
+    .keyboard .letter.space{
+        margin-right: 0%;
+        width: 96.5%;
+        font-size: 16px;
+    }
+
+    .number{
+        float: left;
+        margin: 0 1% 1% 0;
+        width: 30%;
+        height: 50px;
+        line-height: 50px;
+        background: white;
+        border: 1px ridge black;
+        font-size: 20px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+}
+
+@media screen and (min-width:1024px) {
+    .symbol{
+        float: left;
+        margin: 0 1% 1% 0;
+        width: 4.5%;
+        height: 40px;
+        line-height: 40px;
+        background: #fff;
+        border: 1px ridge black;
+        font-size: 15px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+
+    .symbol.del ,.symbol.tab {
+        width: 17%;
+    }
+    .symbol.enter{
+        margin-left: 0%;
+        width: 28.5%;
+    }
+
+    .symbol.shift{
+        margin-right:0%;
+        width: 34.1%;
+    }
+    .keyboard .symbol.space{
+        margin-right: 0%;
+        width: 97%;
+    }
+
+    .keyboard .letter{
+        float: left;
+        margin: 0 1% 1% 0;
+        width: 6%;
+        height: 40px;
+        line-height: 40px;
+        background: #fff;
+        border: 1px ridge black;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+
+    .keyboard .letter.line2{
+        margin: 0 1.7% 1% 0;
+    }
+
+    .keyboard .letter.line3{
+        margin: 0 3.5% 1% 0;
+    }
+
+    .keyboard .letter.del{
+        margin-left: 1%;
+        margin-right: 0%;
+        width: 16%;
+        font-size: 16px;
+    }
+
+    .keyboard .letter.enter{
+        margin-right: 0%;
+        margin-left: 1.2%;
+        width: 16%;
+        font-size: 16px;
+    }
+
+    .keyboard .letter.shift{
+        margin-right: 0%;
+        margin-left: 0%;
+        width: 18.6%;
+        font-size: 16px;
+    }
+
+    .keyboard .letter.space{
+        margin-right: 0%;
+        width: 96.5%;
+        font-size: 16px;
+    }
+
+    .number{
+        float: left;
+        margin: 0 1% 1% 0;
+        width: 30%;
+        height: 50px;
+        line-height: 50px;
+        background: white;
+        border: 1px ridge black;
+        font-size: 20px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+}
+
+@media screen and (min-width:1440px) {
+    .symbol{
+        float: left;
+        margin: 0 1% 1% 0;
+        width: 4.5%;
+        height: 40px;
+        line-height: 40px;
+        background: #fff;
+        border: 1px ridge black;
+        font-size: 15px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+
+    .symbol.del ,.symbol.tab {
+        margin-left: 0%;
+        margin-right: 0%;
+    }
+    .symbol.enter{
+        margin-left: 0%;
+        margin-right: 0%;
+    }
+
+    .symbol.shift{
+        margin-left: 0%;
+        margin-right: 0%;
+    }
+    .keyboard .symbol.space{
+        margin-left: 0%;
+        margin-right: 0%;
+        width: 96.5%;
+    }
+
+    .keyboard .letter{
+        float: left;
+        margin: 0 1% 1% 0;
+        width: 6%;
+        height: 40px;
+        line-height: 40px;
+        background: #fff;
+        border: 1px ridge black;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+
+    .keyboard .letter.line2{
+        margin: 0 1.7% 1% 0;
+    }
+
+    .keyboard .letter.line3{
+        margin: 0 3.5% 1% 0;
+    }
+
+    .keyboard .letter.del{
+        margin-left: 1%;
+        margin-right: 0%;
+        width: 16.5%;
+        font-size: 16px;
+    }
+
+    .keyboard .letter.enter{
+        margin-right: 0%;
+        margin-left: 1.05%;
+        width: 16.5%;
+        font-size: 16px;
+    }
+
+    .keyboard .letter.shift{
+        margin-right: 0%;
+        margin-left: 0%;
+        width: 19%;
+        font-size: 16px;
+    }
+
+    .keyboard .letter.space{
+        margin-right: 0%;
+        width: 96.4%;
+        font-size: 16px;
+    }
+
+    .number{
+        float: left;
+        margin: 0 1% 1% 0;
+        width: 30%;
+        height: 50px;
+        line-height: 50px;
+        background: white;
+        border: 1px ridge black;
+        font-size: 20px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
 }

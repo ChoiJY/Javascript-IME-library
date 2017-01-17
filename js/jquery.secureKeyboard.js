@@ -30,25 +30,24 @@
     var rNum;
     var shift;
     var i, j, k;
-    var numpads =   ['0',    '1',   '2',
-                     '3',    '4',   '5',
-                     '6',    '7',   '8',
-                     '9',    '',    '',
-                     'DELETE','ENTER','CLOSE'];
+    var numpads =   ['1',    '2',   '3',
+                     '4',    '5',   '6',
+                     '7',    '8',   '9',
+                     '',    '0',    '',
+                     'DEL','ENTER','CLOSE'];
 
-    var qwerty =    [['`','~','1','!','2','@','3','#','4','$','5','%','6','^','7','\&','8','*','9','(','0',')','-','_','=','+','','','DELETE'],
+    var qwerty =    [['`','~','1','!','2','@','3','#','4','$','5','%','6','^','7','\&','8','*','9','(','0',')','-','_','=','+','','','DEL'],
                     ['q','Q','w','W','e','E','r','R','t','T','y','Y','u','U','i','I','o','O','p','P','[','{',']','}','\\','|','','','TAB'],
                     ['a','A','s','S','d','D','f','F','g','G','h','H','j','J','k','K','l','L',';',':','\'','"','','','ENTER'],
                     ['z','Z','x','X','c','C','v','V','b','B','n','N','m','M',',','\<','.','\>','/','?','','','SHIFT','SPACE']];
 
-    var alphabets = [['q','w','e','r','t','y','u','i','o','p','','DELETE'],
+    var alphabets = [['q','w','e','r','t','y','u','i','o','p','','DEL'],
                     ['a','s','d','f','g','h','j','k','l','','ENTER'],
                     ['z','x','c','v','b','n','m','','SHIFT','SPACE']];
 
-    var qwerty3 =    [['`','1','2','3','4','5','6','7','8','9','0','-','=','DELETE'],
-                    ['TAB','q','w','e','r','t','y','u','i','o','p','[',']','\\'],
-                    ['CAPSLOCK','a','s','d','f','g','h','j','k','l',';','\'','ENTER'],
-                    ['SHIFT','z','x','c','v','b','n','m',',','.','/','CLOSE','SPACE']];
+    var _doRandomize = false;
+
+    $('.tv').mousedown(function() { _doRandomize = !(_doRandomize) });
 
     // qwerty keyboard without symbols
     // by using alphabets[], make virtual keyboard which has only alphabet
@@ -57,21 +56,24 @@
         var nameHTML = "";
 
         (function () {
-            for(i=0; i<alphabets.length; i++){
-                if(i===2){
-                    for(j=0; j<alphabets[i].length-2; j++){
-                        rNum = Math.floor(Math.random() * (alphabets[i].length - 3));
-                        temp = alphabets[i][j];
-                        alphabets[i][j] = alphabets[i][rNum];
-                        alphabets[i][rNum] = temp;
+
+            if(_doRandomize){
+                for(i=0; i<alphabets.length; i++){
+                    if(i===2){
+                        for(j=0; j<alphabets[i].length-2; j++){
+                            rNum = Math.floor(Math.random() * (alphabets[i].length - 3));
+                            temp = alphabets[i][j];
+                            alphabets[i][j] = alphabets[i][rNum];
+                            alphabets[i][rNum] = temp;
+                        }
                     }
-                }
-                else{
-                    for(var j=0; j<alphabets[i].length-1; j++) {
-                        rNum = Math.floor(Math.random() * (alphabets[i].length - 2));
-                        temp = alphabets[i][j];
-                        alphabets[i][j] = alphabets[i][rNum];
-                        alphabets[i][rNum] = temp;
+                    else{
+                        for(var j=0; j<alphabets[i].length-1; j++) {
+                            rNum = Math.floor(Math.random() * (alphabets[i].length - 2));
+                            temp = alphabets[i][j];
+                            alphabets[i][j] = alphabets[i][rNum];
+                            alphabets[i][rNum] = temp;
+                        }
                     }
                 }
             }
@@ -79,7 +81,7 @@
             for(i=0; i<alphabets.length; i++) {
                     alphabets[i].forEach(function (item) {
                         switch (item){
-                            case 'DELETE':
+                            case 'DEL':
                                 nameHTML += '<li class="letter line' + (i+1) + ' del lastitem">' + item + '</li>';
                                 break;
                             case 'ENTER':
@@ -89,31 +91,15 @@
                                 nameHTML += '<li class="letter line' + (i+1) + ' shift lastitem">' + item + '</li>';
                                 break;
                             case 'SPACE':
-                                nameHTML += '<li class="letter line' + (i+1) + ' space">' + item + '</li>';
+                                nameHTML += '<li class="letter line' + (i+1) + ' space lastitem">' + item + '</li>';
                                 break;
                             default:
                                 nameHTML += '<li class="letter line' + (i+1) + '">' + item + '</li>';
                                 break;
                         }
-                                /* use if... else statements
-                        if(item === 'ENTER'){
-                            nameHTML += '<li class="letter enter">' + item + '</li>';
-                        }
-
-                        else if(item === 'SHIFT'){
-                            nameHTML += '<li class="letter shift">' + item + '</li>';
-                        }
-
-                        else if(item === 'DELETE'){
-                            nameHTML += '<li class="letter del">' + item + '</li>';
-                        }
-
-                        else if(item === 'SPACE'){
-                            nameHTML += '<li class="letter space">' + item + '</li>';
-                        }
-                        else nameHTML += '<li class="letter">' + item + '</li>';*/
                     });
             }
+
         })();
 
         // if keyboard exists keyboard disappears
@@ -139,7 +125,7 @@
         $('.keyboard li').click(function () {
             var $this = $(this),
                 character = $this.text();
-            console.log($this);
+            //console.log($this);
             if($this.hasClass('shift')){
                 $('.letter').toggleClass('uppercase');
                 shift = !!shift ? false : true;
@@ -168,12 +154,13 @@
         var numberHTML = "";
 
         (function() {
-            //shuffling numbers
-            for(i=0; i<numpads.length-4; i++){
-                rNum = Math.floor(Math.random() * (numpads.length-3));
-                temp = numpads[i];
-                numpads[i] = numpads[rNum];
-                numpads[rNum] = temp;
+            if(_doRandomize){
+                for(i=0; i<numpads.length-4; i++){
+                    rNum = Math.floor(Math.random() * (numpads.length-3));
+                    temp = numpads[i];
+                    numpads[i] = numpads[rNum];
+                    numpads[rNum] = temp;
+                }
             }
 
             numpads.forEach(function(item){
@@ -238,27 +225,30 @@
         var qwertyHTML = "";
         // shuffling everything in this keyboard
         (function () {
+            if(_doRandomize){
+                for(i=0; i<qwerty.length; i++){
+                    for(j=0; j<qwerty[i].length-2; j+=2){
 
-            for(i=0; i<qwerty.length; i++){
-                for(j=0; j<qwerty[i].length-2; j+=2){
+                        if(i!=3) rNum = Math.floor(Math.random() * (qwerty[i].length-2));
+                        else rNum = Math.floor(Math.random() * (qwerty[i].length-3));
 
-                    if(i!=3) rNum = Math.floor(Math.random() * (qwerty[i].length-2));
-                    else rNum = Math.floor(Math.random() * (qwerty[i].length-3));
+                        if((rNum % 2) != 0) rNum -= 1;
 
-                    if((rNum % 2) != 0) rNum -= 1;
-
-                    temp1 = qwerty[i][j];
-                    temp2 = qwerty[i][j+1];
-                    qwerty[i][j] = qwerty[i][rNum];
-                    qwerty[i][j+1] = qwerty[i][rNum+1];
-                    qwerty[i][rNum] = temp1;
-                    qwerty[i][rNum+1] = temp2;
+                        temp1 = qwerty[i][j];
+                        temp2 = qwerty[i][j+1];
+                        qwerty[i][j] = qwerty[i][rNum];
+                        qwerty[i][j+1] = qwerty[i][rNum+1];
+                        qwerty[i][rNum] = temp1;
+                        qwerty[i][rNum+1] = temp2;
+                    }
                 }
             }
 
             for(i=0; i<qwerty.length; i++) {
                 switch(i){
+
                     case 0:
+                        qwertyHTML += '<div class="line1">';
                         for (j = 0; j<qwerty[i].length-1; j+=2) {
                             if(j<qwerty[i].length-2){
                                 if (qwerty[i][j] != "")
@@ -267,9 +257,10 @@
                                     qwertyHTML += '<li class="symbol">' + qwerty[i][j] + '</li>';
                             }
                         }
-                        qwertyHTML += '<li class="symbol del lastitem">' + qwerty[i][qwerty[i].length-1] + '</li>';
+                        qwertyHTML += '<li class="symbol del lastitem">' + qwerty[i][qwerty[i].length-1] + '</li></div>';
                         break;
                     case 1:
+                        qwertyHTML += '<div class="line2">';
                         for (j = 0; j<qwerty[i].length-1; j+=2) {
                             if(j<qwerty[i].length-2){
                                 if (qwerty[i][j] != "")
@@ -278,9 +269,10 @@
                                     qwertyHTML += '<li class="symbol">' + qwerty[i][j] + '</li>';
                             }
                         }
-                        qwertyHTML += '<li class="symbol tab lastitem">' + qwerty[i][qwerty[i].length-1] + '</li>';
+                        qwertyHTML += '<li class="symbol tab lastitem">' + qwerty[i][qwerty[i].length-1] + '</li></div>';
                         break;
                     case 2:
+                        qwertyHTML += '<div class="line3">';
                         for (j = 0; j<qwerty[i].length-1; j+=2) {
                             if(j<qwerty[i].length-2) {
                                 if (qwerty[i][j] != "")
@@ -289,9 +281,10 @@
                                     qwertyHTML += '<li class="symbol">' + qwerty[i][j] + '</li>';
                             }
                         }
-                        qwertyHTML += '<li class="symbol enter lastitem">' + qwerty[i][qwerty[i].length-1] + '</li>';
+                        qwertyHTML += '<li class="symbol enter lastitem">' + qwerty[i][qwerty[i].length-1] + '</li></div>';
                         break;
                     default:
+                        qwertyHTML += '<div class="line4">';
                         for (j = 0; j<qwerty[i].length-1; j+=2) {
                             if(j<qwerty[i].length-3){
                                 if (qwerty[i][j] != "")
@@ -300,12 +293,11 @@
                                     qwertyHTML += '<li class="symbol">' + qwerty[i][j] + '</li>';
                             }
                         }
-                        qwertyHTML += '<li class="symbol shift lastitem">' + qwerty[i][qwerty[i].length-2] + '</li>';
-                        qwertyHTML += '<li class="symbol space">' + qwerty[i][qwerty[i].length-1] + '</li>';
+                        qwertyHTML += '<li class="symbol shift lastitem">' + qwerty[i][qwerty[i].length-2] + '</li></div>';
+                        qwertyHTML += '<div class="line5"><li class="symbol space lastitem">' + qwerty[i][qwerty[i].length-1] + '</li></div>';
                         break;
                 }
             }
-
         })();
 
         // if keyboard is already opened, close present keyboard.
@@ -330,7 +322,7 @@
         $('.keyboard li').click(function () {
             var $this = $(this),
                 character = $this.text();
-                console.log(character)
+                //console.log(character)
             if($this.hasClass('shift')){
                 $('.symbol.k').toggleClass('uppercase');
                 $('.symbol.k span').toggle();
@@ -351,9 +343,7 @@
             //character.replace(/&amp;/, '&').replace(/&lt;/,'<').replace(/&gt;/,'>');
             // Add the character
             $('.originalField').val($('.originalField').val() + character.replace(/&amp;/g, '&').replace(/&lt;/,'<').replace(/&gt;/,'>'));
-            console.log($('.originalField').val());
+            //console.log($('.originalField').val());
         });
-
     });
-
 })(jQuery);
