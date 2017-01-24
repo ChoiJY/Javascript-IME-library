@@ -48,7 +48,7 @@ form{
     opacity: 0;
 }
 
-.keyboard span.null:hover{
+.keyboard span.null:hover, .keyboard span.on:hover, .keyboard span.off:hover{
     cursor: default;
 }
 
@@ -60,13 +60,14 @@ form{
     display: none;
 }
 
-.keyboard span:hover {
+.keyboard span.symbol:hover, .keyboard span.letter:hover, .keyboard span.number:hover{
     position: relative;
     top: 1px;
     left: 1px;
     border-color: black;
     cursor: pointer;
 }
+
 .symbol{
     float: left;
     margin: 0 0 1% 0;
@@ -109,6 +110,10 @@ form{
     margin-right: 0%;
     background: darkgray;
     width: 100%;
+}
+
+span[class="off"], span[class="on"]{
+    pointer-events: none;
 }
 
 .letter{
@@ -183,4 +188,49 @@ form{
 .number.del{
     background: limegreen;
     color: whitesmoke;
+}
+
+@media (min-height: 700px) {
+
+    .number{
+        float: left;
+        margin: 0 0% 1% 0;
+        margin-left: 4%;
+        margin-right: 4%;
+        width: 25%;
+        height: 45px;
+        line-height: 45px;
+        background: lightgrey;
+        border: 2px ridge white;
+        font-size: 25px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+
+    .letter{
+        float: left;
+        margin: 0 0 1% 0;
+        width: 8%;
+        height: 50px;
+        line-height: 50px;
+        background: #0d1c30;
+        font-size: 17px;
+        color: ghostwhite;
+        border: 2px ridge white;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+
+    .symbol{
+        float: left;
+        margin: 0 0 1% 0;
+        width: 6.5%;
+        height: 50px;
+        line-height: 50px;
+        background: #fff;
+        border: 2px ridge white;
+        font-size: 17px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
 }

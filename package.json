@@ -1,0 +1,28 @@
+{
+  "name": "m2p",
+  "version": "1.0.0",
+  "description": "secure virtual keypad written by js, jquery",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ChoiJY/2016-2017-m2soft-intership.git"
+  },
+  "keywords": [
+    "CHOIJY",
+    "virtual",
+    "keypad",
+    "virtual",
+    "keyboard",
+    "virtual",
+    "keypad"
+  ],
+  "author": "CHOIJY",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ChoiJY/2016-2017-m2soft-intership/issues"
+  },
+  "homepage": "https://github.com/ChoiJY/2016-2017-m2soft-intership#readme"
+}
