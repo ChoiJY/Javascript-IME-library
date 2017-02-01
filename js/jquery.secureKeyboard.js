@@ -1,21 +1,20 @@
 /**
  * Created by jychoi on 2017. 1. 5.
- * this code makes virtual keypad on screen.
  *
- * use manuel
+ * description
  *
- * this source code contains three kinds of keyboard.
- * (only number, only alphabet, basic keyboard.qwerty keyboard)
+ * this plugin contains three kinds of keyboard.
  *
  * 1.   if you need numpad, you must make input class name which is a numField
  *
- * 2.   and if you want attach keypad, call init(randomLayoutOption)
+ * 2.   and if you want attach keypad, call init(randomOption)
  *
- * 3.   if you make class which has name numField, and click that, numpad appears.
- *                        which has name nameField, alphabet keypad appears.
- *                        which has name originalField, basic qwerty keypad appears.
+ * 3.   if you make element which has class name numField, and click that, numpad appears.
+ *                          which has class name nameField, alphabet keypad appears.
+ *                          which has class name originalField, basic qwerty keypad appears.
+ *                          click again these fields, keyboard disappears
  *
- * 4.   you want to disappear keypad, click again input field.
+ * 4.   you want to remove keypad, call detach method.
  *
  */
 
@@ -23,311 +22,343 @@
 
     "use strict";
 
-    $.SVkeyboard = {
-        //_shift : false,
-        _isRandom: false,
+    $.fn.SVkeyboard = $.SVkeyboard = {
 
-        numpads: ["1", "2", "3",
-            "4", "5", "6",
-            "7", "8", "9",
-            "", "0", "",
-            "CLOSE", "ENTER", "\u232B"],
+        // default keyboard's options
+        _defaults: function () {
 
-        alphabets: [["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "", "\u232B"],
-            ["", "a", "s", "d", "f", "g", "h", "j", "k", "l", "", "ENTER"],
-            ["", "", "z", "x", "c", "v", "b", "n", "m", "", "", "SHIFT"],
-            ["SPACE"]],
+            var _isRandom = false;
+            var _numpads = ["1", "2", "3",
+                "4", "5", "6",
+                "7", "8", "9",
+                "", "0", "",
+                "CLOSE", "ENTER", "\u232B"];
+            var _alphabets = [["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "", "\u232B"],
+                ["", "a", "s", "d", "f", "g", "h", "j", "k", "l", "", "ENTER"],
+                ["", "", "z", "x", "c", "v", "b", "n", "m", "", "", "SHIFT"],
+                ["SPACE"]];
+            var _qwerty = [["`", "~", "1", "!", "2", "@", "3", "#", "4", "$", "5", "%", "6", "^", "7", "&", "8", "*", "9", "(", "0", ")", "-", "_", "=", "+", "", "", "\u232B"],
+                ["q", "Q", "w", "W", "e", "E", "r", "R", "t", "T", "y", "Y", "u", "U", "i", "I", "o", "O", "p", "P", "[", "{", "]", "}", "\\", "|", "", "", "TAB"],
+                ["", "", "a", "A", "s", "S", "d", "D", "f", "F", "g", "G", "h", "H", "j", "J", "k", "K", "l", "L", ";", ":", "'", "\"", "", "", "", "", "ENTER"],
+                ["", "", "", "", "z", "Z", "x", "X", "c", "C", "v", "V", "b", "B", "n", "N", "m", "M", ",", "<", ".", ">", "/", "?", "", "", "", "", "SHIFT"],
+                ["SPACE"]];
+            var options = {
+                _isRandom: _isRandom,
+                _numpads: _numpads,
+                _alphabets: _alphabets,
+                _qwerty: _qwerty
+            };
+            return options;
 
-        qwerty: [["`", "~", "1", "!", "2", "@", "3", "#", "4", "$", "5", "%", "6", "^", "7", "&", "8", "*", "9", "(", "0", ")", "-", "_", "=", "+", "", "", "\u232B"],
-            ["q", "Q", "w", "W", "e", "E", "r", "R", "t", "T", "y", "Y", "u", "U", "i", "I", "o", "O", "p", "P", "[", "{", "]", "}", "\\", "|", "", "", "TAB"],
-            ["", "", "a", "A", "s", "S", "d", "D", "f", "F", "g", "G", "h", "H", "j", "J", "k", "K", "l", "L", ";", ":", "'", "\"", "", "", "", "", "ENTER"],
-            ["", "", "", "", "z", "Z", "x", "X", "c", "C", "v", "V", "b", "B", "n", "N", "m", "M", ",", "<", ".", ">", "/", "?", "", "", "", "", "SHIFT"],
-            ["SPACE"]],
+        },
 
-        _init: function (randomOption) {
+        //  public methods
+        //
+        //  init(randomOption)
+        //  this method initializes keyboard
+        //
+        //  @parameter
+        //  randomOption(Object) : if user want to change options (ex. randomized keypad, changing keyboard arrangement)
+        //                         you write parameters you want to change
+        //
+        //
+
+        init: function (randomOption) {
+
+            // user options and default options are merged, by this line.
+            var options = $.extend({}, this._defaults(), randomOption);
             var body = $("body");
-            body.append("<div class='keyboard'></div>");
-            var generatedHTML;
-            var $keyboard = $(".keyboard");
-            keyboard._isRandom = randomOption;
+            if (document.getElementsByClassName("keyboard").length === 0) {
+                body.append("<div class='keyboard'></div>");
+                var generatedHTML;
+                var $keyboard = $(".keyboard");
 
-            body.on("click", function (event) {
-                //event.stopPropagation();
-                switch (event.target.className) {
-                    case "nameField":
-                        //event.stopPropagation();
-                        generatedHTML = _writeHTML(keyboard.alphabets, keyboard.alphabets);
-                        if (keyboard._isRandom) {
-                            generatedHTML = _writeHTML(keyboard.alphabets, _randomLayout(keyboard.alphabets));
-                        }
+                body.on("click", function (event) {
 
-                        if (($keyboard.children().length) === 0) {
-                            // 폼 아래에 충분한 공간이 있을 경우에는 그냥 하단에 키보드를 생성
-                            if (event.clientY < (window.innerHeight * 0.7) && (window.innerHeight > 500)) {
-                                $keyboard.append(generatedHTML);
-                                $keyboard.css("top", window.innerHeight - $keyboard.height());
+                    switch (event.target.className) {
+                        case "nameField":
+
+                            generatedHTML = _writeHTML("alphabets", options._alphabets);
+                            if (options._isRandom) {
+                                generatedHTML = _writeHTML("alphabets", _randomLayout("alphabets", options._alphabets));
                             }
-                            // 폼 아래에 충분한 공간이 없을 경우에는 키보드 만큼 스크롤을 내리고, 하단에 키보드를 생성시킨다.
+
+                            if (($keyboard.children().length) === 0) {
+                                // 폼 아래에 충분한 공간이 있을 경우에는 그냥 하단에 키보드를 생성
+                                if (event.clientY < (window.innerHeight * 0.7) && (window.innerHeight > 500)) {
+                                    $keyboard.append(generatedHTML);
+                                    $keyboard.css("top", window.innerHeight - $keyboard.height());
+                                }
+                                // 폼 아래에 충분한 공간이 없을 경우에는 키보드 만큼 스크롤을 내리고, 하단에 키보드를 생성시킨다.
+                                else {
+                                    $keyboard.append(generatedHTML);
+                                    document.body.scrollTop = $keyboard.height();
+                                    $keyboard.css("top", window.innerHeight - $keyboard.height());
+                                }
+                            }
                             else {
-                                $keyboard.append(generatedHTML);
-                                document.body.scrollTop = $keyboard.height();
-                                $keyboard.css("top", window.innerHeight - $keyboard.height());
-                            }
-                        }
-                        else {
-                            $keyboard.css("top", window.innerHeight);
-                            document.body.scrollTop -= $keyboard.height();
-                            $keyboard.html("");
-                        }
-
-                        // Sense keyboard li's contents
-                        $(".keyboard span").on("click", function () {
-                            //stop event duplication
-                            //event.stopPropagation();
-                            var $this = $(this);
-                            var character = $this.text();
-
-                            if ($this.hasClass("shift")) {
-                                $(".letter").toggleClass("uppercase");
-                                return "";
+                                $keyboard.css("top", window.innerHeight);
+                                document.body.scrollTop -= $keyboard.height();
+                                $keyboard.html("");
                             }
 
-                            if ($this.hasClass("del")) {
-                                var text = $(".nameField").val();
-                                $(".nameField").val(text.substr(0, text.length - 1));
-                                return "";
+                            // Sense keyboard li's contents
+                            $(".keyboard span").on("click", function () {
+                                //stop event duplication
+                                //event.stopPropagation();
+                                var $this = $(this);
+                                var character = $this.text();
+
+                                if ($this.hasClass("shift")) {
+                                    $(".letter").toggleClass("uppercase");
+                                    return "";
+                                }
+
+                                if ($this.hasClass("del")) {
+                                    var text = $(".nameField").val();
+                                    $(".nameField").val(text.substr(0, text.length - 1));
+                                    return "";
+                                }
+
+                                if ($this.hasClass("space")) {
+                                    character = " ";
+                                }
+
+                                if ($this.hasClass("enter")) {
+                                    character = "\n";
+                                }
+
+                                if ($this.hasClass("uppercase")) {
+                                    character = character.toUpperCase();
+                                }
+
+                                // Add the character
+                                $(".nameField").val($(".nameField").val() + character.replace(/&amp;/, "&").replace(/&lt;/, "<").replace(/&gt;/, ">"));
+                            });
+                            break;
+
+                        case "pwdField":
+
+                            generatedHTML = _writeHTML("numpads", options._numpads);
+
+                            if (options._isRandom) {
+                                generatedHTML = _writeHTML("numpads", _randomLayout("numpads", options._numpads));
                             }
 
-                            if ($this.hasClass("space")) {
-                                character = " ";
+                            // if keyboard is already opened, close present keyboard.
+                            if (($keyboard.children().length) === 0) {
+                                // attach keyboard to upper side form
+                                if (event.clientY < (window.innerHeight * 0.7) && (window.innerHeight > 500)) {
+                                    $keyboard.append(generatedHTML);
+                                    $keyboard.css("top", window.innerHeight - $keyboard.height());
+                                }
+                                // attach keyboard to down side form
+                                else {
+                                    $keyboard.append(generatedHTML);
+                                    document.body.scrollTop = $keyboard.height();
+                                    $keyboard.css("top", window.innerHeight - $keyboard.height());
+                                }
                             }
-
-                            if ($this.hasClass("enter")) {
-                                character = "\n";
-                            }
-
-                            if ($this.hasClass("uppercase")) {
-                                character = character.toUpperCase();
-                            }
-
-                            // Add the character
-                            $(".nameField").val($(".nameField").val() + character.replace(/&amp;/, "&").replace(/&lt;/, "<").replace(/&gt;/, ">"));
-                        });
-                        break;
-
-                    case "pwdField":
-                        //event.stopPropagation();
-                        generatedHTML = _writeHTML(keyboard.numpads, keyboard.numpads);
-
-                        if (keyboard._isRandom) {
-                            generatedHTML = _writeHTML(keyboard.numpads, _randomLayout(keyboard.numpads));
-                        }
-
-                        // if keyboard is already opened, close present keyboard.
-                        if (($keyboard.children().length) === 0) {
-                            // attach keyboard to upper side form
-                            if (event.clientY < (window.innerHeight * 0.7) && (window.innerHeight > 500)) {
-                                $keyboard.append(generatedHTML);
-                                $keyboard.css("top", window.innerHeight - $keyboard.height());
-                            }
-                            // attach keyboard to down side form
                             else {
-                                $keyboard.append(generatedHTML);
-                                document.body.scrollTop = $keyboard.height();
-                                $keyboard.css("top", window.innerHeight - $keyboard.height());
-                            }
-                        }
-                        else {
-                            $keyboard.css("top", window.innerHeight);
-                            document.body.scrollTop -= $keyboard.height();
-                            $keyboard.html("");
-                        }
-
-                        // Sense keyboard li's contents
-                        $(".keyboard span").on("click", function () {
-                            //stop event duplication
-                            //event.stopPropagation();
-                            var $this = $(this);
-                            var character = $this.text();
-
-                            if ($this.hasClass("del")) {
-                                var text = $(".pwdField").val();
-                                $(".pwdField").val(text.substr(0, text.length - 1));
-                                return "";
+                                $keyboard.css("top", window.innerHeight);
+                                document.body.scrollTop -= $keyboard.height();
+                                $keyboard.html("");
                             }
 
-                            if ($this.hasClass("space")) {
-                                character = " ";
+                            // Sense keyboard li's contents
+                            $(".keyboard span").on("click", function () {
+                                //stop event duplication
+                                //event.stopPropagation();
+                                var $this = $(this);
+                                var character = $this.text();
+
+                                if ($this.hasClass("del")) {
+                                    var text = $(".pwdField").val();
+                                    $(".pwdField").val(text.substr(0, text.length - 1));
+                                    return "";
+                                }
+
+                                if ($this.hasClass("space")) {
+                                    character = " ";
+                                }
+
+                                if ($this.hasClass("enter")) {
+                                    character = "\n";
+                                }
+
+                                if ($this.hasClass("uppercase")) {
+                                    character = character.toUpperCase();
+                                }
+
+                                if ($this.hasClass("close")) {
+                                    $(".keyboard").empty();
+                                    return "";
+                                }
+
+                                // Add the character
+                                $(".pwdField").val($(".pwdField").val() + character);
+                            });
+                            break;
+
+                        case "originalField":
+                            generatedHTML = _writeHTML("qwerty", options._qwerty);
+
+                            if (options._isRandom) {
+                                generatedHTML = _writeHTML("qwerty", _randomLayout("qwerty", options._qwerty));
                             }
 
-                            if ($this.hasClass("enter")) {
-                                character = "\n";
+                            // if keyboard is already opened, close present keyboard.
+                            if (($keyboard.children().length) === 0) {
+
+                                // attach keyboard to upper side form
+                                if (event.clientY < (window.innerHeight * 0.7) && (window.innerHeight > 500)) {
+                                    $keyboard.append(generatedHTML);
+                                    $keyboard.css("top", window.innerHeight - $keyboard.height());
+                                }
+                                // attach keyboard to down side form
+                                else {
+                                    $keyboard.append(generatedHTML);
+                                    document.body.scrollTop = $keyboard.height();
+                                    $keyboard.css("top", window.innerHeight - $keyboard.height());
+                                }
                             }
-
-                            if ($this.hasClass("uppercase")) {
-                                character = character.toUpperCase();
-                            }
-
-                            if ($this.hasClass("close")) {
-                                $(".keyboard").empty();
-                                return "";
-                            }
-
-                            // Add the character
-                            $(".pwdField").val($(".pwdField").val() + character);
-                        });
-                        break;
-
-                    case "originalField":
-                        generatedHTML = _writeHTML(keyboard.qwerty, keyboard.qwerty);
-
-                        if (keyboard._isRandom) {
-                            generatedHTML = _writeHTML(keyboard.qwerty, _randomLayout(keyboard.qwerty));
-                        }
-
-                        // if keyboard is already opened, close present keyboard.
-                        if (($keyboard.children().length) === 0) {
-
-                            // attach keyboard to upper side form
-                            if (event.clientY < (window.innerHeight * 0.7) && (window.innerHeight > 500)) {
-                                $keyboard.append(generatedHTML);
-                                $keyboard.css("top", window.innerHeight - $keyboard.height());
-                            }
-                            // attach keyboard to down side form
                             else {
-                                $keyboard.append(generatedHTML);
-                                document.body.scrollTop = $keyboard.height();
-                                $keyboard.css("top", window.innerHeight - $keyboard.height());
-                            }
-                        }
-                        else {
-                            $keyboard.css("top", window.innerHeight);
-                            document.body.scrollTop -= $keyboard.height();
-                            $keyboard.html("");
-                        }
-
-                        // input keyboard event
-                        $(".keyboard span.lastitem, span.symbol.k").on("click", function () {
-                            //stop event duplication
-                            //event.stopImmediatePropagation();
-                            var $this = $(this);
-                            var character = $this.text();
-                            if ($this.hasClass("shift")) {
-                                $(".symbol.k span").toggleClass("on");
-                                return "";
+                                $keyboard.css("top", window.innerHeight);
+                                document.body.scrollTop -= $keyboard.height();
+                                $keyboard.html("");
                             }
 
-                            if ($this.hasClass("⌫")) {
-                                var text = $(".originalField").val();
-                                $(".originalField").val(text.substr(0, text.length - 1));
-                                return "";
-                            }
+                            // input keyboard event
+                            $(".keyboard span.lastitem, span.symbol.k").on("click", function () {
+                                //stop event duplication
+                                //event.stopImmediatePropagation();
+                                var $this = $(this);
+                                var character = $this.text();
+                                if ($this.hasClass("shift")) {
+                                    $(".symbol.k span").toggleClass("on");
+                                    return "";
+                                }
 
-                            if ($this.hasClass("k")) {
-                                character = $("span:visible", $this).html();
-                            }
+                                if ($this.hasClass("⌫")) {
+                                    var text = $(".originalField").val();
+                                    $(".originalField").val(text.substr(0, text.length - 1));
+                                    return "";
+                                }
 
-                            if ($this.hasClass("tab")) {
-                                character = "\t";
-                            }
+                                if ($this.hasClass("k")) {
+                                    character = $("span:visible", $this).html();
+                                }
 
-                            if ($this.hasClass("space")) {
-                                character = " ";
-                            }
+                                if ($this.hasClass("tab")) {
+                                    character = "\t";
+                                }
 
-                            if ($this.hasClass("enter")) {
-                                character = "\n";
-                            }
-                            // Add the character
-                            $(".originalField").val($(".originalField").val() + character.replace(/&amp;/, "&").replace(/&lt;/, "<").replace(/&gt;/, ">"));
-                        });
-                        break;
-                }
-            });
+                                if ($this.hasClass("space")) {
+                                    character = " ";
+                                }
+
+                                if ($this.hasClass("enter")) {
+                                    character = "\n";
+                                }
+                                // Add the character
+                                $(".originalField").val($(".originalField").val() + character.replace(/&amp;/, "&").replace(/&lt;/, "<").replace(/&gt;/, ">"));
+                            });
+                            break;
+                    }
+                });
+            }
+        },
+
+        //
+        //  public methods
+        //
+        //  detach()
+        //  if you want remove keyboard, you can call this method
+        //
+
+        detach: function () {
+            $(".keyboard").remove();
         }
     };
 
-    var keyboard = $.SVkeyboard;
-    // for test random options
-        $(".tv").click(function () {
-            if (keyboard._isRandom) {
-                keyboard._isRandom = false;
-            }
-            else {
-                keyboard._isRandom = true;
-            }
-        });
+    //
+    //  private methods
+    //
+    //  _randomLayout(keyboardType, layout)
+    //  this method uses keyboard array to shuffle keyboard's layout
+    //
+    //  @parameter
+    //  keyboardType(String) : options for switch from numpads to full qwerty keyboard
+    //  layout(Array) : keyboard array
+    //
+    //  @return
+    //  changedKeyset : randomized keypad
+    //
 
-        /*  function which shuffles keyboards
-         //
-         //  @parameter
-         //  keyboardType(String) : numpad, alphabet, keyboard.qwerty
-         //
-         //  @return
-         //  changedKeyset : randomized keypad
-         */
+    var _randomLayout = function (keyboardType, layout) {
 
-        function _randomLayout(keyboardType) {
-            var changedKeyset = [];
-            var i;
-            var j;
-            var temp;
-            var temp2;
-            var rNum;
-            (function () {
-                switch (keyboardType) {
-                    case keyboard.alphabets:
+        var changedKeyset = [];
+        var i;
+        var j;
+        var temp;
+        var temp2;
+        var rNum;
+        (function () {
+            switch (keyboardType) {
+                case "alphabets":
 
-                        changedKeyset = JSON.parse(JSON.stringify(keyboard.alphabets));
-                        for (i = 0; i < changedKeyset.length - 1; i += 1) {
-                            for (j = 0; j < changedKeyset[i].length - 1; j += 1) {
-                                rNum = Math.floor(Math.random() * (changedKeyset[i].length - 2));
-                                temp = changedKeyset[i][j];
-                                changedKeyset[i][j] = changedKeyset[i][rNum];
-                                changedKeyset[i][rNum] = temp;
-                            }
-                        }
-                        break;
-
-                    case keyboard.numpads:
-
-                        changedKeyset = JSON.parse(JSON.stringify(keyboard.numpads));
-
-                        for (i = 0; i < changedKeyset.length - 4; i += 1) {
-                            rNum = Math.floor(Math.random() * (changedKeyset.length - 3));
-                            temp = changedKeyset[i];
-                            changedKeyset[i] = changedKeyset[rNum];
-                            changedKeyset[rNum] = temp;
-                        }
-                        break;
-
-                    case keyboard.qwerty:
-
-                        changedKeyset = JSON.parse(JSON.stringify(keyboard.qwerty));
-
-                        for (i = 0; i < changedKeyset.length - 1; i += 1) for (j = 0; j < changedKeyset[i].length - 2; j += 2) {
-
-                            rNum = Math.floor(Math.random() * (changedKeyset[i].length - 3));
-
-                            if ((rNum % 2) !== 0) {
-                                rNum -= 1;
-                            }
-
+                    changedKeyset = JSON.parse(JSON.stringify(layout));
+                    for (i = 0; i < changedKeyset.length - 1; i += 1) {
+                        for (j = 0; j < changedKeyset[i].length - 1; j += 1) {
+                            rNum = Math.floor(Math.random() * (changedKeyset[i].length - 2));
                             temp = changedKeyset[i][j];
-                            temp2 = changedKeyset[i][j + 1];
                             changedKeyset[i][j] = changedKeyset[i][rNum];
-                            changedKeyset[i][j + 1] = changedKeyset[i][rNum + 1];
                             changedKeyset[i][rNum] = temp;
-                            changedKeyset[i][rNum + 1] = temp2;
                         }
-                        break;
-                }
-            })();
+                    }
+                    break;
 
-            return changedKeyset;
-        }
+                case "numpads":
 
-    /*
+                    changedKeyset = JSON.parse(JSON.stringify(layout));
+
+                    for (i = 0; i < changedKeyset.length - 4; i += 1) {
+                        rNum = Math.floor(Math.random() * (changedKeyset.length - 3));
+                        temp = changedKeyset[i];
+                        changedKeyset[i] = changedKeyset[rNum];
+                        changedKeyset[rNum] = temp;
+                    }
+                    break;
+
+                case "qwerty":
+
+                    changedKeyset = JSON.parse(JSON.stringify(layout));
+
+                    for (i = 0; i < changedKeyset.length - 1; i += 1) for (j = 0; j < changedKeyset[i].length - 2; j += 2) {
+
+                        rNum = Math.floor(Math.random() * (changedKeyset[i].length - 3));
+
+                        if ((rNum % 2) !== 0) {
+                            rNum -= 1;
+                        }
+
+                        temp = changedKeyset[i][j];
+                        temp2 = changedKeyset[i][j + 1];
+                        changedKeyset[i][j] = changedKeyset[i][rNum];
+                        changedKeyset[i][j + 1] = changedKeyset[i][rNum + 1];
+                        changedKeyset[i][rNum] = temp;
+                        changedKeyset[i][rNum + 1] = temp2;
+                    }
+                    break;
+            }
+        })();
+
+        return changedKeyset;
+    };
+
+    //
+    //    _writeHTML = function (keyboardType, layout)
+    //
     //    Read keypad array's data and translate them to html tags
     //
     //    @parameter
@@ -336,9 +367,9 @@
     //
     //    @return
     //    html : html tags derived from keyboard which is selected from parameter
-    */
+    //
 
-    function _writeHTML(keyboardType, layout) {
+    var _writeHTML = function (keyboardType, layout) {
 
         var html = "";
         var i;
@@ -346,7 +377,7 @@
         (function () {
             switch (keyboardType) {
 
-                case keyboard.numpads:
+                case "numpads":
                     layout.forEach(function (item) {
                         switch (item) {
                             case layout[layout.length - 1]:
@@ -367,7 +398,7 @@
                     });
                     break;
 
-                case keyboard.alphabets:
+                case "alphabets":
 
                     for (i = 0; i < layout.length; i += 1) {
                         html += "<div class='line" + (i + 1) + "'>";
@@ -396,7 +427,7 @@
                     }
                     break;
 
-                case keyboard.qwerty:
+                case "qwerty":
 
                     for (i = 0; i < layout.length - 1; i += 1) {
                         html += "<div class='line" + (i + 1) + "'>";
@@ -416,5 +447,6 @@
             }
         })();
         return html;
-    }
+    };
+
 })(jQuery);
