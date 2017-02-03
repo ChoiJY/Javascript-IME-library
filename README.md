@@ -9,20 +9,21 @@
 
 # 사용법
 
-    <b>초기화</b>
+   <b>초기화</b>
 
-    $(...).SVkeyboard.init(userOptions)
-    $.SVkeyboard.init(userOptions)
+        $(...).SVkeyboard.init(userOptions)
+        $.SVkeyboard.init(userOptions)
+        
+        위와 같이 초기화 시킬 수 있다.
+        
+   <b>userOptions(Object)</b>
 
-    <b>userOptions(Object)</b>
+        _isRandom(boolean) : 기본 설정은 false로 되어 있으며, 초기화 시 {_isRandom:true}로 초기화 할 경우에 키보드의 배열이 랜덤하게 바뀌어 출력된다.
+   
+   <b>제거</b>
 
-    _isRandom(boolean) : 기본 설정은 false로 되어 있으며, 초기화 시 {_isRandom:true}로 초기화 할 경우에 키보드의 배열이 랜덤하게 바뀌어 출력된다.
-
-
-    <b>제거</b>
-
-    $(...).SVkeyboard.detach()
-    $.SVkeyboard.detach()
+        $(...).SVkeyboard.detach()
+        $.SVkeyboard.detach()
 
 
 # 진행중인 이슈
