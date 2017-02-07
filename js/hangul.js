@@ -70,8 +70,7 @@
         JUNG_HASH,
         JONG_HASH,
         COMPLEX_CONSONANTS_HASH,
-        COMPLEX_VOWELS_HASH
-        ;
+        COMPLEX_VOWELS_HASH;
 
     function _makeHash(array){
         var length = array.length,

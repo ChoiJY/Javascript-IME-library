@@ -90,15 +90,17 @@
                 var generatedHTML;
                 var $keyboard = $('.keyboard');
 
-
                 body.on('click', function (event) {
 
                     switch (event.target.className) {
+
                         case 'nameField':
 
-                            generatedHTML = _writeHTML('letter', options._alphabets);
                             if (options._isRandom) {
                                 generatedHTML = _writeHTML('letter', _randomLayout('letter', options._alphabets));
+                            }
+                            else{
+                                generatedHTML = _writeHTML('letter', options._alphabets);
                             }
 
                             if (($keyboard.children().length) === 0) {
@@ -163,9 +165,11 @@
 
                         case 'hangulField':
 
-                            generatedHTML = _writeHTML('symbol', options._hangul);
                             if (options._isRandom) {
                                 generatedHTML = _writeHTML('symbol', _randomLayout('symbol', options._hangul));
+                            }
+                            else{
+                                generatedHTML = _writeHTML('symbol', options._hangul);
                             }
 
                             // 기존에 키보드가 없는 경우
@@ -228,10 +232,11 @@
 
                         case 'pwdField':
 
-                            generatedHTML = _writeHTML('number', options._numpads);
-
                             if (options._isRandom) {
                                 generatedHTML = _writeHTML('number', _randomLayout('number', options._numpads));
+                            }
+                            else {
+                                generatedHTML = _writeHTML('number', options._numpads);
                             }
 
                             // if keyboard is already opened, close present keyboard.
@@ -284,67 +289,6 @@
                                 $('.pwdField').val($('.pwdField').val() + character);
                             });
                             break;
-                        /*
-                        case 'originalField':
-                            generatedHTML = _writeHTML('qwerty', options._qwerty);
-
-                            if (options._isRandom) {
-                                generatedHTML = _writeHTML('qwerty', _randomLayout('qwerty', options._qwerty));
-                            }
-
-                            // if keyboard is already opened, close present keyboard.
-                            if (($keyboard.children().length) === 0) {
-
-                                // attach keyboard to upper side form
-                                if (event.clientY < (window.innerHeight * 0.7) && (window.innerHeight > 500)) {
-                                    $keyboard.append(generatedHTML);
-                                    $keyboard.css('top', window.innerHeight - $keyboard.height());
-                                }
-                                // attach keyboard to down side form
-                                else {
-                                    $keyboard.append(generatedHTML);
-                                    document.body.scrollTop = $keyboard.height();
-                                    $keyboard.css('top', window.innerHeight - $keyboard.height());
-                                }
-                            }
-                            else {
-                                $keyboard.css('top', window.innerHeight);
-                                document.body.scrollTop -= $keyboard.height();
-                                $keyboard.html('');
-                            }
-
-                            // input keyboard event
-                            $('.lastitem, .symbol.k').on('click', function () {
-
-                                var $this = $(this);
-                                var character = this.innerText;
-                                if ($this.hasClass('shift')) {
-                                    $('.symbol.k > span').toggleClass('on');
-                                    return '';
-                                }
-
-                                if ($this.hasClass('⌫')) {
-                                    var text = $('.originalField').val();
-                                    $('.originalField').val(text.substr(0, text.length - 1));
-                                    return '';
-                                }
-
-                                if ($this.hasClass('tab')) {
-                                    character = '\t';
-                                }
-
-                                if ($this.hasClass('space')) {
-                                    character = ' ';
-                                }
-
-                                if ($this.hasClass('enter')) {
-                                    character = '\n';
-                                }
-                                // Add the character
-                                $('.originalField').val($('.originalField').val() + character);
-                            });
-                            break;
-                            */
                     }
                 });
             }
@@ -363,6 +307,41 @@
         }
     };
 
+    var _composeHangul = function (inputArray) {
+
+        var context = '';
+
+        var offset = 0xAC00;
+
+        var choSung = [
+            'ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ',
+            'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ',
+            'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'
+        ];  // 19
+
+        var jungSung = [
+            'ㅏ', 'ㅐ', 'ㅑ', 'ㅒ', 'ㅓ',
+            'ㅔ', 'ㅕ', 'ㅖ', 'ㅗ', ['ㅗ', 'ㅏ'], ['ㅗ', 'ㅐ'],
+            ['ㅗ', 'ㅣ'], 'ㅛ', 'ㅜ', ['ㅜ', 'ㅓ'], ['ㅜ', 'ㅔ'], ['ㅜ', 'ㅣ'],
+            'ㅠ', 'ㅡ', ['ㅡ', 'ㅣ'], 'ㅣ'
+        ];  // 21
+
+        var jongSung = [
+            '', 'ㄱ', 'ㄲ', ['ㄱ', 'ㅅ'], 'ㄴ', ['ㄴ', 'ㅈ'], ['ㄴ', 'ㅎ'], 'ㄷ', 'ㄹ',
+            ['ㄹ', 'ㄱ'], ['ㄹ', 'ㅁ'], ['ㄹ', 'ㅂ'], ['ㄹ', 'ㅅ'], ['ㄹ', 'ㅌ'], ['ㄹ', 'ㅍ'], ['ㄹ', 'ㅎ'], 'ㅁ',
+            'ㅂ', ['ㅂ', 'ㅅ'], 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'
+        ];  // 28
+
+        var consonant = [
+            'ㄱ', 'ㄲ', 'ㄳ', 'ㄴ', 'ㄵ', 'ㄶ', 'ㄷ', 'ㄸ',
+            'ㄹ', 'ㄺ', 'ㄻ', 'ㄼ', 'ㄽ', 'ㄾ', 'ㄿ', 'ㅀ',
+            'ㅁ', 'ㅂ', 'ㅃ', 'ㅄ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ',
+            'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'
+        ];
+        // input이 종성이다
+
+    };
+
     //
     //  private methods
     //
@@ -374,86 +353,47 @@
     //  layout(Array) : keyboard array
     //
     //  @return
-    //  changedKeyset : randomized keypad
+    //  changedKeyset : randomized keypad array
     //
 
     var _randomLayout = function (keyboardType, layout) {
 
         var changedKeyset = JSON.parse(JSON.stringify(layout));
-        var i, j;
-        var temp, temp2;
+        var temp;
         var rNum;
+        var rNum2;
+
         (function () {
-            layout.forEach(function (lineItem, lineNum) {
+            changedKeyset.forEach(function (lineItem, lineIdx) {
+                rNum2 = Math.floor(Math.random() * lineIdx);
                 lineItem.forEach(function (ary, index) {
-                    rNum = Math.random() * index;
-                    if(ary[0] !== ''){
+
+                    rNum = Math.floor(Math.random() * index);
+
+                    while(rNum > (lineItem.length - 2)){
+                        rNum = Math.floor(Math.random() * (index));
+                    }
+
+                    if(index !== lineItem.length - 1) {
                         temp = lineItem[index];
-                        lineItem[rNum]
-                    }
-                    console.log(typeof lineItem[index]);
-                    console.log(lineItem + index);
-                    console.log(ary[0], '+', index);
 
-                })
+                        switch (keyboardType) {
+
+                            case 'number':
+
+                                lineItem[index] = changedKeyset[rNum2][rNum];
+                                changedKeyset[rNum2][rNum] = temp;
+                                break;
+
+                            default:
+
+                                lineItem[index] = lineItem[rNum];
+                                lineItem[rNum] = temp;
+                        }
+                    }
+                });
             });
-            /*
-            switch (keyboardType) {
-
-                case 'alphabets':
-
-                    for (i = 0; i < changedKeyset.length - 1; i += 1) {
-                        for (j = 0; j < changedKeyset[i].length - 1; j += 1) {
-                            rNum = Math.floor(Math.random() * (changedKeyset[i].length - 2));
-                            temp = changedKeyset[i][j];
-                            changedKeyset[i][j] = changedKeyset[i][rNum];
-                            changedKeyset[i][rNum] = temp;
-                        }
-                    }
-                    break;
-
-                case 'hangul':
-
-                    for (i = 0; i < changedKeyset.length - 1; i += 1) {
-                        for (j = 0; j < changedKeyset[i].length - 1; j += 1) {
-
-                            if((i === 0 && j <= 16) || (i===0 && j >= 29)){
-                                rNum = Math.floor(Math.random() * (changedKeyset[i].length - 3));
-                            }
-
-                            else {
-
-                                rNum = Math.floor(Math.random() * (changedKeyset[i].length - 3));
-                                ((rNum % 3) !== 0) ? rNum -= (rNum % 3) : rNum;
-
-                                temp = changedKeyset[i][j];
-                                temp2 = changedKeyset[i][j + 1];
-                                temp3 = changedKeyset[i][j + 2];
-                                changedKeyset[i][j] = changedKeyset[i][rNum];
-                                changedKeyset[i][j + 1] = changedKeyset[i][rNum + 1];
-                                changedKeyset[i][j + 2] = changedKeyset[i][rNum + 2];
-                                changedKeyset[i][rNum] = temp;
-                                changedKeyset[i][rNum + 1] = temp2;
-                                changedKeyset[i][rNum + 2] = temp3;
-                            }
-                        }
-                    }
-                    break;
-
-                case 'numpads':
-
-                    for (i = 0; i < changedKeyset.length - 4; i += 1) {
-                        rNum = Math.floor(Math.random() * (changedKeyset.length - 3));
-                        temp = changedKeyset[i];
-                        changedKeyset[i] = changedKeyset[rNum];
-                        changedKeyset[rNum] = temp;
-                    }
-                    break;
-
-            }
-            */
         })();
-
         console.log(changedKeyset);
         return changedKeyset;
     };
@@ -490,6 +430,7 @@
 
                     ary.forEach(function(item, idx){            // current item
                         switch (item){
+
                             case '\u232B':
                                 html += ' del lastitem">' + item;
                                 break;
@@ -527,6 +468,7 @@
                                 break;
 
                             default:
+
                                 if (ary.length === 1){
                                     html += '">' + item + '</span>';
                                 }
@@ -583,4 +525,5 @@
         })();
         return html;
     };
+
 })(jQuery);
