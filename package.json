@@ -24,5 +24,8 @@
   "bugs": {
     "url": "https://github.com/ChoiJY/2016-2017-m2soft-intership/issues"
   },
-  "homepage": "https://github.com/ChoiJY/2016-2017-m2soft-intership#readme"
+  "homepage": "https://github.com/ChoiJY/2016-2017-m2soft-intership#readme",
+  "devDependencies": {
+    "grunt": "^1.0.1"
+  }
 }

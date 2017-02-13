@@ -8,27 +8,26 @@
 </head>
 <body>
 <div class="Screen">
-
-    <textarea class = "tv" rows="8" cols="30"></textarea>
-
-    <div class="testView">
+        <textarea class="tv" rows="8" cols="30"
+                  placeholder="키보드는 input의 위치를 고려해서 등장합니다. input이 키보드가 등장하는 위치보다 아래에 있을 경우에는 스크롤링 해서 등장시킵니다."></textarea>
+    <fieldset>
         <form class="input1" method="post">
-            <label for="name">alphabet :</label>
-                <input class="nameField" type="text" id="name"/><br>
-            <label for="hangul">한글+알파 :</label>
-                <input class="hangulField" type="text" id="hangul"/><br>
-            <label for="pwd">numpad :</label>
-                <input class="pwdField" type="password" id="pwd"/><br>
-            <label for="mobileTest">qwerty :</label>
-                <input class="originalField" type="text" id="mobileTest"/>
+            <label for="name">단어만 :</label>
+            <input class="nameField" type="text" id="name"/><br>
+            <label for="hangul">풀 자판 :</label>
+            <input class="hangulField" type="text" id="hangul"/><br>
+            <label for="pwd">숫자 입력(비밀번호) :</label>
+            <input class="pwdField" type="password" id="pwd"/><br>
         </form>
-    </div>
-
+    </fieldset>
 </div>
 
-<script type='text/javascript' src='http://code.jquery.com/jquery-latest.min.js'></script>
+<script type="text/javascript" src="node_modules/jquery/dist/jquery.js"></script>
+
 <script type='text/javascript' src="js/hangul.js"></script>
 <script type='text/javascript' src='js/jquery.secureKeyboard.js'></script>
-
+<script>
+    $.svk.init();
+</script>
 </body>
 </html>

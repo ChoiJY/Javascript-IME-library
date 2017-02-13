@@ -1,3 +1,12 @@
+# my linter option
 .eslintrc
+
+# package.json is attached
 package.json
-README.md
+
+# build test
+Gruntfile.js
+
+# uncompleted test case
+testDoc2.html
+style2.css

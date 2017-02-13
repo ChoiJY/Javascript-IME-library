@@ -74,11 +74,11 @@
 
     function _makeHash(array){
         var length = array.length,
-            hash = {0 : 0}
-            ;
+            hash = {};
         for (var i = 0; i < length; i++) {
-            if(array[i])
+            if(array[i]){
                 hash[array[i].charCodeAt(0)] = i;
+            }
         }
         return hash;
     }
@@ -198,15 +198,18 @@
                 temp.push(string.charAt(i));
             }
 
-            if(grouped) result.push(temp);
-            else result = result.concat(temp);
+            if(grouped) {
+                result.push(temp);
+            }
+            else{
+                result = result.concat(temp);
+            }
         }
 
         return result;
     };
 
     var assemble = function(array){
-
         if (typeof array === 'string') {
             array = disassemble(array);
         }
@@ -300,14 +303,17 @@
                 continue;
             }
             //console.log(stage, array[i]);
+            // similiar to case loop's go to statements
             if (stage === 0) { // 초성이 올 차례
+                console.log('stage0');
                 if (_isCho(code)) { // 초성이 오면 아무 문제 없다.
                     stage = 1;
                 } else if (_isJung(code)) {
                     // 중성이오면 ㅐ 또는 ㅘ 인것이다. 바로 구분을 못한다. 따라서 특수한 stage인 stage4로 이동
                     stage = 4;
                 }
-            } else if (stage == 1) { //중성이 올 차례
+            } else if (stage === 1) { //중성이 올 차례
+                console.log('stage1');
                 if (_isJung(code)) { //중성이 오면 문제없음 진행.
                     stage = 2;
                 } else { //아니고 자음이오면 ㄻ같은 경우가 있고 ㄹㅋ같은 경우가 있다.
@@ -318,7 +324,8 @@
                         _makeHangul(i-1);
                     }
                 }
-            } else if (stage == 2) { //종성이 올 차례
+            } else if (stage === 2) { //종성이 올 차례
+                console.log('stage2');
                 if (_isJong(code)) { //종성이 오면 다음엔 자음 또는 모음이 온다.
                     stage = 3;
                 } else if (_isJung(code)) { //그런데 중성이 오면 앞의 모음과 합칠 수 있는지 본다.
@@ -331,9 +338,12 @@
                     _makeHangul(i-1);
                     stage = 1;
                 }
-            } else if (stage == 3) { // 종성이 하나 온 상태.
+            } else if (stage === 3) { // 종성이 하나 온 상태.
+                console.log('stage3');
                 if (_isJong(code)) { // 또 종성이면 합칠수 있는지 본다.
                     if (_isJongJoinable(previous_code, code)) { //합칠 수 있으면 계속 진행. 왜냐하면 이번에 온 자음이 다음 글자의 초성이 될 수도 있기 때문
+                        _makeHangul(i);
+                        stage=1;
                     } else { //없으면 한글자 완성
                         _makeHangul(i-1);
                         stage = 1; // 이 종성이 초성이 되고 중성부터 시작
@@ -345,7 +355,8 @@
                     _makeHangul(i-2);
                     stage = 2;
                 }
-            } else if (stage == 4) { // 중성이 하나 온 상태
+            } else if (stage === 4) { // 중성이 하나 온 상태
+                console.log('stage4');
                 if (_isJung(code)) { //중성이 온 경우
                     if(_isJungJoinable(previous_code, code)) { //이전 중성과 합쳐질 수 있는 경우
                         _makeHangul(i);
@@ -357,7 +368,8 @@
                     _makeHangul(i-1);
                     stage = 1;
                 }
-            } else if (stage == 5) { // 초성이 연속해서 두개 온 상태 ㄺ
+            } else if (stage === 5) { // 초성이 연속해서 두개 온 상태 ㄺ
+                console.log('stage5');
                 if (_isJung(code)) { //이번에 중성이면 ㄹ가
                     _makeHangul(i-2);
                     stage = 2;

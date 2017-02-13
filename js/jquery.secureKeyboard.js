@@ -1,70 +1,51 @@
 /**
  * Created by jychoi on 2017. 1. 5.
- *
- * description
- *
- * this plugin contains three kinds of keyboard.
- *
- * 1.   if you need numpad, you must make input class name which is a numField
- *
- * 2.   and if you want attach keypad, call init(randomOption)
- *
- * 3.   if you make element which has class name numField, and click that, numpad appears.
- *                          which has class name nameField, alphabet keypad appears.
- *                          which has class name originalField, basic qwerty keypad appears.
- *                          click again these fields, keyboard disappears
- *
- * 4.   you want to remove keypad, call detach method.
- *
- */
+ * */
 
 (function ($) {
 
     'use strict';
 
-    $.fn.SVkeyboard = $.SVkeyboard = {
+    $.fn.SVkeyboard = $.svk = {  // namespace define & to easy use alias define
 
-        // default keyboard's options
+        //  default options stored object
+        //  To protect default option data from abusing
         _defaults: function () {
 
-            var _isRandom = false;
+            var _isRandom = false,
+                _numpads = [
+                    [['1'], ['2'], ['3'], ['\u232B']],
+                    [['4'], ['5'], ['6'], ['ENTER']],
+                    [['7'], ['8'], ['9'], ['RESET']],
+                    [[''], ['0'], [''], ['CLOSE']]
+                ],
+                _alphabets = [
+                    [['q'], ['w'], ['e'], ['r'], ['t'], ['y'], ['u'], ['i'], ['o'], ['p'], [''], ['\u232B']],
+                    [[''], ['a'], ['s'], ['d'], ['f'], ['g'], ['h'], ['j'], ['k'], ['l'], [''], ['ENTER']],
+                    [[''], [''], ['z'], ['x'], ['c'], ['v'], ['b'], ['n'], ['m'], [''], [''], ['SHIFT']],
+                    [['SPACE'], ['\uD83C\uDF10']]
+                ],
+                _qwerty = [
+                    [['`', '~'], ['1', '!'], ['2', '@'], ['3', '#'], ['4', '$'], ['5', '%'], ['6', '^'], ['7', '&'], ['8', '*'], ['9', '('], ['0', ')'], ['-', '_'], ['=', '+'], [''], ['\u232B']],
+                    [['q', 'Q', 'ㅂ', 'ㅃ'], ['w', 'W', 'ㅈ', 'ㅉ'], ['e', 'E', 'ㄷ', 'ㄸ'], ['r', 'R', 'ㄱ', 'ㄲ'], ['t', 'T', 'ㅅ', 'ㅆ'], ['y', 'Y', 'ㅛ'], ['u', 'U', 'ㅕ'], ['i', 'I', 'ㅑ'], ['o', 'O', 'ㅐ', 'ㅒ'], ['p', 'P', 'ㅔ', 'ㅖ'], ['[', '{'], [']', '}'], ['\\', '|'], [''], ['TAB']],
+                    [[''], ['a', 'A', 'ㅁ'], ['s', 'S', 'ㄴ'], ['d', 'D', 'ㅇ'], ['f', 'F', 'ㄹ'], ['g', 'G', 'ㅎ'], ['h', 'H', 'ㅗ'], ['j', 'J', 'ㅓ'], ['k', 'K', 'ㅏ'], ['l', 'L', 'ㅣ'], [';', ':'], ['\'', '"'], [''], [''], ['ENTER']],
+                    [[''], [''], ['z', 'Z', 'ㅋ'], ['x', 'X', 'ㅌ'], ['c', 'C', 'ㅊ'], ['v', 'V', 'ㅍ'], ['b', 'B', 'ㅠ'], ['n', 'N', 'ㅜ'], ['m', 'M', 'ㅡ'], [',', '<'], ['.', '>'], ['/', '?'], [''], [''], ['SHIFT']],
+                    [['SPACE'], ['\uD83C\uDF10']]
+                ],
+                _simpleQwerty = [
+                    [['q', 'Q', 'ㅂ', 'ㅃ'], ['w', 'W', 'ㅈ', 'ㅉ'], ['e', 'E', 'ㄷ', 'ㄸ'], ['r', 'R', 'ㄱ', 'ㄲ'], ['t', 'T', 'ㅅ', 'ㅆ'], ['y', 'Y', 'ㅛ'], ['u', 'U', 'ㅕ'], ['i', 'I', 'ㅑ'], ['o', 'O', 'ㅐ', 'ㅒ'], ['p', 'P', 'ㅔ', 'ㅖ'], [''], ['\u232B']],
+                    [[''], ['a', 'A', 'ㅁ'], ['s', 'S', 'ㄴ'], ['d', 'D', 'ㅇ'], ['f', 'F', 'ㄹ'], ['g', 'G', 'ㅎ'], ['h', 'H', 'ㅗ'], ['j', 'J', 'ㅓ'], ['k', 'K', 'ㅏ'], ['l', 'L', 'ㅣ'], [''], ['ENTER']],
+                    [[''], [''], ['z', 'Z', 'ㅋ'], ['x', 'X', 'ㅌ'], ['c', 'C', 'ㅊ'], ['v', 'V', 'ㅍ'], ['b', 'B', 'ㅠ'], ['n', 'N', 'ㅜ'], ['m', 'M', 'ㅡ'], [''], [''], ['SHIFT']],
+                    [['SPACE'], ['\uD83C\uDF10']]
+                ],
+                options = {
+                    _isRandom: _isRandom,
+                    _numpads: _numpads,
+                    _alphabets: _simpleQwerty,
+                    _qwerty: _qwerty,
+                    _hangul: _qwerty
+                };
 
-            var _numpads = [
-                [['1'], ['2'], ['3'], ['\u232B']],
-                [['4'], ['5'], ['6'], ['ENTER']],
-                [['7'], ['8'], ['9'], ['RESET']],
-                [[''], ['0'], [''], ['CLOSE']]
-            ];
-
-            var _alphabets = [
-                [['q'], ['w'], ['e'], ['r'], ['t'], ['y'], ['u'], ['i'], ['o'], ['p'], [''], ['\u232B']],
-                [[''], ['a'], ['s'], ['d'], ['f'], ['g'], ['h'], ['j'], ['k'], ['l'], [''], ['ENTER']],
-                [[''], [''] , ['z'], ['x'], ['c'], ['v'], ['b'], ['n'], ['m'], [''], [''] , ['SHIFT']],
-                [['SPACE'], ['\uD83C\uDF10']]
-            ];
-
-            var _qwerty = [
-                [['`', '~'], ['1', '!'], ['2', '@'], ['3', '#'], ['4', '$'], ['5', '%'], ['6', '^'], ['7', '&'], ['8', '*'], ['9', '('], ['0', ')'], ['-', '_'], ['=', '+'], [''], ['\u232B']],
-                [['q', 'Q', 'ㅂ', 'ㅃ'], ['w', 'W', 'ㅈ', 'ㅉ'], ['e', 'E', 'ㄷ', 'ㄸ'], ['r', 'R', 'ㄱ', 'ㄲ'], ['t', 'T', 'ㅅ', 'ㅆ'], ['y', 'Y' ,'ㅛ'], ['u', 'U', 'ㅕ'], ['i', 'I', 'ㅑ'], ['o', 'O', 'ㅐ', 'ㅒ'], ['p', 'P', 'ㅔ', 'ㅖ'], ['[', '{'], [']', '}'], ['\\', '|'], [''], ['TAB']],
-                [[''], ['a', 'A', 'ㅁ'], ['s', 'S', 'ㄴ'], ['d', 'D', 'ㅇ'], ['f', 'F', 'ㄹ'], ['g', 'G', 'ㅎ'], ['h', 'H', 'ㅗ'], ['j', 'J', 'ㅓ'], ['k', 'K', 'ㅏ'], ['l', 'L', 'ㅣ'], [';', ':'], ['\'', '"'], [''], [''], ['ENTER']],
-                [[''], [''], ['z', 'Z', 'ㅋ'], ['x', 'X', 'ㅌ'], ['c', 'C', 'ㅊ'], ['v', 'V', 'ㅍ'], ['b', 'B', 'ㅠ'], ['n', 'N', 'ㅜ'], ['m', 'M', 'ㅡ'], [',', '<'], ['.', '>'], ['/', '?'], [''], [''], ['SHIFT']],
-                [['SPACE'],['\uD83C\uDF10']]
-            ];
-
-            var _simpleQwerty = [
-                [['q', 'Q', 'ㅂ', 'ㅃ'], ['w', 'W', 'ㅈ', 'ㅉ'], ['e', 'E', 'ㄷ', 'ㄸ'], ['r', 'R', 'ㄱ', 'ㄲ'], ['t', 'T', 'ㅅ', 'ㅆ'], ['y', 'Y' ,'ㅛ'], ['u', 'U', 'ㅕ'], ['i', 'I', 'ㅑ'], ['o', 'O', 'ㅐ', 'ㅒ'], ['p', 'P', 'ㅔ', 'ㅖ'], [''], ['\u232B']],
-                [[''], ['a', 'A', 'ㅁ'], ['s', 'S', 'ㄴ'], ['d', 'D', 'ㅇ'], ['f', 'F', 'ㄹ'], ['g', 'G', 'ㅎ'], ['h', 'H', 'ㅗ'], ['j', 'J', 'ㅓ'], ['k', 'K', 'ㅏ'], ['l', 'L', 'ㅣ'], [''], ['ENTER']],
-                [[''], [''], ['z', 'Z', 'ㅋ'], ['x', 'X', 'ㅌ'], ['c', 'C', 'ㅊ'], ['v', 'V', 'ㅍ'], ['b', 'B', 'ㅠ'], ['n', 'N', 'ㅜ'], ['m', 'M', 'ㅡ'], [''], [''], ['SHIFT']],
-                [['SPACE'], ['\uD83C\uDF10']]
-            ];
-
-            var options = {
-                _isRandom: _isRandom,
-                _numpads: _numpads,
-                _alphabets: _simpleQwerty,
-                _qwerty: _qwerty,
-                _hangul: _qwerty
-            };
             return options;
         },
 
@@ -74,32 +55,33 @@
         //  this method initializes keyboard
         //
         //  @parameter
-        //  randomOption(Object) : if user want to change options (ex. randomized keypad, changing keyboard arrangement)
-        //                         you write parameters you want to change
+        //  randomOption(Object) : if user want to change options (ex. randomized keypad layout)
+        //                         you write parameters that want to change
         //
-        //
+        //  @return
+        //  (String) : current keyboard initialized option
 
         init: function (randomOption) {
 
             // user options and default options are merged, by this line.
             var options = $.extend({}, this._defaults(), randomOption);
-            var body = $('body');
+            var $body = $('body');
             if (document.getElementsByClassName('keyboard').length === 0) {
 
-                body.append('<div class="keyboard"></div>');
+                $body.append('<div class="keyboard"></div>');
                 var generatedHTML;
-                var $keyboard = $('.keyboard');
+                var $keyboard = $('.keyboard');             //  caching multiple use function
 
-                body.on('click', function (event) {
-
+                $body.on('click', function (event) {
+                    //console.log(event.target.parentNode)
                     switch (event.target.className) {
-
                         case 'nameField':
-
+                            console.log(event.target)
                             if (options._isRandom) {
                                 generatedHTML = _writeHTML('letter', _randomLayout('letter', options._alphabets));
                             }
-                            else{
+
+                            else {
                                 generatedHTML = _writeHTML('letter', options._alphabets);
                             }
 
@@ -116,6 +98,7 @@
                                     $keyboard.css('top', window.innerHeight - $keyboard.height());
                                 }
                             }
+
                             // 기존의 키보드가 있다면 삭제하고 그만큼 스크롤을 올림
                             else {
                                 $keyboard.css('top', window.innerHeight);
@@ -126,8 +109,10 @@
                             // Sense keyboard li's contents
                             $('.letter').on('click', function () {
 
-                                var $this = $(this);
-                                var character = this.innerText;
+                                var $this = $(this),
+                                    text = '',
+                                    $screen = $(event.target),
+                                    character = this.innerText;
 
                                 if ($this.hasClass('shift')) {
                                     $('.letter > span > span').toggleClass('upper');
@@ -140,8 +125,8 @@
                                 }
 
                                 if ($this.hasClass('del')) {
-                                    var text = $('.nameField').val();
-                                    $('.nameField').val(text.substr(0, text.length - 1));
+                                    text = $screen.val();
+                                    $screen.val(text.substr(0, text.length - 1));
                                     return '';
                                 }
 
@@ -158,8 +143,9 @@
                                 }
 
                                 // Add the character
-                                $('.nameField').val($('.nameField').val() + character.replace(/&amp;/, '&').replace(/&lt;/, '<').replace(/&gt;/, '>'));
-                                $('.nameField').val(Hangul.a($('.nameField').val()));
+                                $screen.val($screen.val() + character);
+                                //$('.nameField').val(_composeHangul($('.nameField').val()));
+                                $screen.val(Hangul.a($screen.val()));
                             });
                             break;
 
@@ -168,7 +154,7 @@
                             if (options._isRandom) {
                                 generatedHTML = _writeHTML('symbol', _randomLayout('symbol', options._hangul));
                             }
-                            else{
+                            else {
                                 generatedHTML = _writeHTML('symbol', options._hangul);
                             }
 
@@ -197,8 +183,10 @@
                             // Sense keyboard li's contents
                             $('.symbol').on('click', function () {
 
-                                var $this = $(this);
-                                var character = this.innerText;
+                                var $this = $(this),
+                                    $screen = $(event.target),
+                                    text,
+                                    character = this.innerText;
 
                                 if ($this.hasClass('shift')) {
                                     $('.symbol > span > span').toggleClass('upper');
@@ -211,8 +199,8 @@
                                 }
 
                                 if ($this.hasClass('del')) {
-                                    var text = $('.hangulField').val();
-                                    $('.hangulField').val(text.substr(0, text.length - 1));
+                                    text = $screen.val();
+                                    $screen.val(text.substr(0, text.length - 1));
                                     return '';
                                 }
 
@@ -225,8 +213,8 @@
                                 }
 
                                 // Add the character
-                                $('.hangulField').val($('.hangulField').val() + character.replace(/&amp;/, '&').replace(/&lt;/, '<').replace(/&gt;/, '>'));
-                                $('.hangulField').val(Hangul.a($('.hangulField').val()));
+                                $screen.val($screen.val() + character);
+                                $screen.val(Hangul.a($screen.val()));
                             });
                             break;
 
@@ -262,17 +250,19 @@
                             // Sense keyboard li's contents
                             $('.number').on('click', function () {
 
-                                var $this = $(this);
-                                var character = this.innerText;
+                                var $this = $(this),
+                                    text,
+                                    $screen = $(event.target),
+                                    character = this.innerText;
 
                                 if ($this.hasClass('del')) {
-                                    var text = $('.pwdField').val();
-                                    $('.pwdField').val(text.substr(0, text.length - 1));
+                                    text = $screen.val();
+                                    $screen.val(text.substr(0, text.length - 1));
                                     return '';
                                 }
-                                if ($this.hasClass('reset')){
-                                    var text = $('.pwdField').val();
-                                    $('.pwdField').val(text.substr(text.length));
+                                if ($this.hasClass('reset')) {
+                                    text = $screen.val();
+                                    $screen.val(text.substr(text.length));
                                     return '';
                                 }
 
@@ -281,12 +271,12 @@
                                 }
 
                                 if ($this.hasClass('close')) {
-                                    $('.keyboard').empty();
+                                    $keyboard.empty();
                                     return '';
                                 }
 
                                 // Add the character
-                                $('.pwdField').val($('.pwdField').val() + character);
+                                $screen.val($screen.val() + character);
                             });
                             break;
                     }
@@ -307,39 +297,132 @@
         }
     };
 
-    var _composeHangul = function (inputArray) {
+    var _composeHangul = function (input) {
 
-        var context = '';
+        var context = [],
+            _charoffset = 0xAC00,                   //  44032 가
+            _choSung = [
+                'ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ',
+                'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ',
+                'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'
+            ],  // 19
+            _jungSung = [
+                'ㅏ', 'ㅐ', 'ㅑ', 'ㅒ', 'ㅓ', 'ㅔ',
+                'ㅕ', 'ㅖ', 'ㅗ', 'ㅘ', 'ㅙ', 'ㅚ',
+                'ㅛ', 'ㅜ', 'ㅝ', 'ㅞ', 'ㅟ', 'ㅠ',
+                'ㅡ', 'ㅢ', 'ㅣ'
+            ],  // 21
+            _jongSung = [
+                '', 'ㄱ', 'ㄲ', 'ㄳ', 'ㄴ', 'ㄵ', 'ㄶ',
+                'ㄷ', 'ㄹ', 'ㄺ', 'ㄻ', 'ㄼ', 'ㄽ', 'ㄾ',
+                'ㄿ', 'ㅀ', 'ㅁ', 'ㅂ', 'ㅄ', 'ㅅ', 'ㅆ',
+                'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'
+            ],  // 28
+            _composedVowel = {
+                ㅗㅏ: 'ㅘ',
+                ㅗㅐ: 'ㅙ',
+                ㅗㅣ: 'ㅚ',
+                ㅜㅝ: 'ㅝ',
+                ㅜㅔ: 'ㅞ',
+                ㅜㅣ: 'ㅟ',
+                ㅡㅣ: 'ㅢ'
+            },
+            _composedConsonant = {
+                ㄱㅅ: 'ㄳ',
+                ㄴㅈ: 'ㄵ',
+                ㄴㅎ: 'ㄶ',
+                ㄹㄱ: 'ㄺ',
+                ㄹㅁ: 'ㄻ',
+                ㄹㅂ: 'ㄼ',
+                ㄹㅅ: 'ㄽ',
+                ㄹㅌ: 'ㄾ',
+                ㄹㅍ: 'ㄿ',
+                ㄹㅎ: 'ㅀ',
+                ㅂㅅ: 'ㅄ',
+                ㅅㅅ: 'ㅆ'
+            };
 
-        var offset = 0xAC00;
+        function combineChar(cho, jung, jong) {
+            var result;
+            result = _charoffset + ($.inArray(cho, _choSung) * 21 * 28) + ($.inArray(jung, _jungSung) * 28) + $.inArray(jong, _jongSung);
+            //console.log(result);
+            result = String.fromCharCode(result);
+            return result;
+        }
 
-        var choSung = [
-            'ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ',
-            'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ',
-            'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'
-        ];  // 19
+        function _isComposeVowel(first, second) {
+            return _composedVowel[first + second] ? _composedVowel[first + second] : false;
+        }
 
-        var jungSung = [
-            'ㅏ', 'ㅐ', 'ㅑ', 'ㅒ', 'ㅓ',
-            'ㅔ', 'ㅕ', 'ㅖ', 'ㅗ', ['ㅗ', 'ㅏ'], ['ㅗ', 'ㅐ'],
-            ['ㅗ', 'ㅣ'], 'ㅛ', 'ㅜ', ['ㅜ', 'ㅓ'], ['ㅜ', 'ㅔ'], ['ㅜ', 'ㅣ'],
-            'ㅠ', 'ㅡ', ['ㅡ', 'ㅣ'], 'ㅣ'
-        ];  // 21
+        function _isComposeConsonant(first, second) {
+            return _composedConsonant[first + second] ? _composedConsonant[first + second] : false;
+        }
 
-        var jongSung = [
-            '', 'ㄱ', 'ㄲ', ['ㄱ', 'ㅅ'], 'ㄴ', ['ㄴ', 'ㅈ'], ['ㄴ', 'ㅎ'], 'ㄷ', 'ㄹ',
-            ['ㄹ', 'ㄱ'], ['ㄹ', 'ㅁ'], ['ㄹ', 'ㅂ'], ['ㄹ', 'ㅅ'], ['ㄹ', 'ㅌ'], ['ㄹ', 'ㅍ'], ['ㄹ', 'ㅎ'], 'ㅁ',
-            'ㅂ', ['ㅂ', 'ㅅ'], 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'
-        ];  // 28
 
-        var consonant = [
-            'ㄱ', 'ㄲ', 'ㄳ', 'ㄴ', 'ㄵ', 'ㄶ', 'ㄷ', 'ㄸ',
-            'ㄹ', 'ㄺ', 'ㄻ', 'ㄼ', 'ㄽ', 'ㄾ', 'ㄿ', 'ㅀ',
-            'ㅁ', 'ㅂ', 'ㅃ', 'ㅄ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ',
-            'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'
-        ];
-        // input이 종성이다
+        /*
+         if(한글)
+         if(자음 case:1)
+         초성
+         if(자음)
+         초성
+         해당 자음을 가지고 go to case 1
+         else(모음 case 3)
+         초+중
+         if(모음)
+         if(모음 && 합성 가능)
+         초+중(합성모음)
+         if(자음)
+         초+중+종
+         if(초성이 아닌 자음)
+         초+중+종
+         go to case 2
+         else(초성인 자음)
+         초+중+종
+         해당 자음을 가지고 go to case 1
+         else(모음)
+         go to case 2
+         else(합성 불가능한 모음)
+         초+중
+         go to case 2
+         else(자음)
+         초+중+종
+         else(모음 case:2)
+         다음 문자로
 
+         else(한글아님)
+         */
+        function _isCho(input) {
+            var num = $.inArray(input, _choSung);
+            if (num >= 0) {
+                return num;
+            }
+            else {
+                return -1;
+            }
+        }
+
+        function _isJung(input) {
+            var num = $.inArray(input, _jungSung);
+            if (num >= 0) {
+                return num;
+            }
+            else {
+                return -1;
+            }
+        }
+
+        function _isJong(input) {
+            var num = $.inArray(input, _jongSung);
+            if (num >= 0) {
+                return num;
+            }
+            else {
+                return -1;
+            }
+        }
+
+        //context = assemble(input);
+        return context;
     };
 
     //
@@ -358,34 +441,37 @@
 
     var _randomLayout = function (keyboardType, layout) {
 
-        var changedKeyset = JSON.parse(JSON.stringify(layout));
-        var temp;
-        var rNum;
-        var rNum2;
+        var changedKeyset = JSON.parse(JSON.stringify(layout)),
+            temp,
+            rNum,
+            rNum2;
 
         (function () {
             changedKeyset.forEach(function (lineItem, lineIdx) {
+
                 rNum2 = Math.floor(Math.random() * lineIdx);
+
                 lineItem.forEach(function (ary, index) {
 
                     rNum = Math.floor(Math.random() * index);
 
-                    while(rNum > (lineItem.length - 2)){
+                    while (rNum > (lineItem.length - 2)) {
                         rNum = Math.floor(Math.random() * (index));
                     }
 
-                    if(index !== lineItem.length - 1) {
+                    if (index !== lineItem.length - 1) {
+
                         temp = lineItem[index];
 
                         switch (keyboardType) {
 
-                            case 'number':
+                            case 'number':      // numpad는 random option 적용 시 모든 배치가 바뀌기 때문에
 
                                 lineItem[index] = changedKeyset[rNum2][rNum];
                                 changedKeyset[rNum2][rNum] = temp;
                                 break;
 
-                            default:
+                            default:            // 다른 키보드의 경우에는 키보드의 같은 라인만 랜덤 배치
 
                                 lineItem[index] = lineItem[rNum];
                                 lineItem[rNum] = temp;
@@ -394,7 +480,6 @@
                 });
             });
         })();
-        console.log(changedKeyset);
         return changedKeyset;
     };
 
@@ -420,16 +505,16 @@
         var html = '';
 
         (function () {
-            layout.forEach(function (lineItem, lineNum) {       // line
+            layout.forEach(function (lineItem, lineNum) {           // line
 
                 html += '<div class="line' + (lineNum + 1) + '">';
 
-                lineItem.forEach(function (ary) {               // item array
+                lineItem.forEach(function (ary) {                   // item array
 
-                    html += '<span class="'+ keyboardType;
+                    html += '<span class="' + keyboardType;
 
-                    ary.forEach(function(item, idx){            // current item
-                        switch (item){
+                    ary.forEach(function (item, idx) {              // current item
+                        switch (item) {
 
                             case '\u232B':
                                 html += ' del lastitem">' + item;
@@ -469,13 +554,13 @@
 
                             default:
 
-                                if (ary.length === 1){
+                                if (ary.length === 1) {             // numpad의 경우만 적용
                                     html += '">' + item + '</span>';
                                 }
 
-                                if (ary.length === 2){
+                                if (ary.length === 2) {             // 특수문자의 경우에 적용
 
-                                    if(idx === 0) {
+                                    if (idx === 0) {
                                         html += '">' +
                                             '<span class="others"><span class="lower">' + item + '</span>';
                                     }
@@ -486,32 +571,32 @@
                                 }
                                 else {
 
-                                    if(ary.length === 3){
+                                    if (ary.length === 3) {         // 영어 대,소문자와 한글 문자 하나가 들어가는 경우
 
-                                        if(idx === 0){
+                                        if (idx === 0) {
                                             html += ' k">' +
                                                 '<span class="en"><span class="lower">' + item + '</span>';
                                         }
-                                        else if(idx === 1){
+                                        else if (idx === 1) {
                                             html += '<span class="upper">' + item + '</span></span>';
                                         }
-                                        else{
+                                        else {
                                             html += '<span class="kr">' + item + '</span></span>';
                                         }
                                     }
 
-                                    if(ary.length === 4){
-                                        if(idx === 0){
+                                    if (ary.length === 4) {         // 영어 대,소문자와 한글 문자 두개가 들어가는 경우
+                                        if (idx === 0) {
                                             html += ' k">' +
                                                 '<span class="en"><span class="lower">' + item + '</span>';
                                         }
-                                        else if(idx === 1){
+                                        else if (idx === 1) {
                                             html += '<span class="upper">' + item + '</span></span>';
                                         }
-                                        else if(idx === 2){
+                                        else if (idx === 2) {
                                             html += '<span class="kr"><span class="lower">' + item + '</span>';
                                         }
-                                        else{
+                                        else {
                                             html += '<span class="upper">' + item + '</span></span></span>';
                                         }
                                     }
@@ -525,5 +610,4 @@
         })();
         return html;
     };
-
 })(jQuery);

@@ -17,13 +17,6 @@ form{
     height: 5%;
 }
 
-.testView {
-    position: relative;
-    border: 3px ridge;
-    padding: 5px;
-    margin : auto;
-}
-
 .Screen{
     position: relative;
     height: 1500px;
@@ -34,7 +27,9 @@ form{
     padding: 2%;
 }
 
-.keyboard {
+.keyboard{
+    z-index: 100;
+    opacity: 1;
     padding-top: 0.5%;
     background: white;
     position: fixed;
@@ -89,31 +84,35 @@ form{
     width: 3.5%;
 }
 
-.symbol.⌫ {
+.symbol.del {
+    width: 12%;
     font-size: 15px;
     background: darkgray;
-    width: 12%;
 }
 
 .symbol.tab{
-    background: darkgray;
     width: 12%;
+    background: darkgray;
 }
 
 .symbol.enter{
-    background: darkgray;
     width: 18%;
+    background: darkgray;
 }
 
 .symbol.shift{
-    background: darkgray;
     width: 21%;
+    background: darkgray;
 }
 
 .symbol.space{
-    margin-right: 0%;
+    width: 79%;
     background: darkgray;
-    width: 100%;
+}
+
+.symbol.local{
+    width: 21%;
+    background: darkgray;
 }
 
 span[class="off"], span[class="on"]{
@@ -132,7 +131,7 @@ span[class="off"], span[class="on"]{
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
 }
-.line3 .letter.null{
+.line3>.letter.null{
     width: 5%;
 }
 
@@ -180,72 +179,74 @@ span[class="off"], span[class="on"]{
     float: left;
     margin: 0 0% 1% 0;
     margin-left: 4%;
-    margin-right: 4%;
-    width: 25%;
+    margin-right: 1%;
+    width: 20%;
     height: 40px;
     line-height: 40px;
-    background: lightgrey;
+    background: floralwhite;
     border: 2px ridge white;
     font-size: 20px;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
 }
 
-.number.close{
-    background: #ff6259;
+.number.lastitem{
+    margin-left: 0%;
+    margin-right: 0%;
+}
+
+.number.close, .number.enter, .number.del, .number.reset{
+    margin-left: 5%;
+    margin-right: 0%;
+    background: skyblue;
     color: whitesmoke;
 }
 
-.number.enter{
-    background: #fffa27;
-}
-
 .number.del{
-    background: limegreen;
+    margin-left: 5%;
+    margin-right: 0%;
+    background: indianred;
     color: whitesmoke;
 }
 
 @media (min-height: 700px) {
-
+    /** 대화면 tablet, laptop **/
     .number{
-        float: left;
-        margin: 0 0% 1% 0;
-        margin-left: 4%;
-        margin-right: 4%;
-        width: 25%;
         height: 45px;
         line-height: 45px;
-        background: lightgrey;
-        border: 2px ridge white;
         font-size: 25px;
-        -moz-border-radius: 5px;
-        -webkit-border-radius: 5px;
     }
 
     .letter{
-        float: left;
-        margin: 0 0 1% 0;
-        width: 8%;
         height: 50px;
         line-height: 50px;
-        background: #0d1c30;
         font-size: 17px;
-        color: ghostwhite;
-        border: 2px ridge white;
-        -moz-border-radius: 5px;
-        -webkit-border-radius: 5px;
     }
 
     .symbol{
-        float: left;
-        margin: 0 0 1% 0;
-        width: 6.5%;
         height: 50px;
         line-height: 50px;
-        background: #fff;
-        border: 2px ridge white;
         font-size: 17px;
-        -moz-border-radius: 5px;
-        -webkit-border-radius: 5px;
+    }
+}
+
+@media (min-height: 1500px){
+    /** 데스크탑 환경 **/
+    .number{
+        height: 50px;
+        line-height: 50px;
+        font-size: 30px;
+    }
+
+    .letter{
+        height: 50px;
+        line-height: 50px;
+        font-size: 30px;
+    }
+
+    .symbol{
+        height: 50px;
+        line-height: 50px;
+        font-size: 30px;
     }
 }
