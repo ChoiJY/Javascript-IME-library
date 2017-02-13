@@ -10,3 +10,6 @@ Gruntfile.js
 # uncompleted test case
 testDoc2.html
 style2.css
+
+#dependency modules
+node_modules
