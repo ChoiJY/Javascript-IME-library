@@ -1,6 +1,7 @@
 /**
  * Created by jychoi on 2017. 1. 5.
- * */
+ *
+ **/
 
 (function ($) {
 
@@ -76,7 +77,7 @@
                     //console.log(event.target.parentNode)
                     switch (event.target.className) {
                         case 'nameField':
-                            console.log(event.target)
+
                             if (options._isRandom) {
                                 generatedHTML = _writeHTML('letter', _randomLayout('letter', options._alphabets));
                             }
@@ -145,7 +146,7 @@
                                 // Add the character
                                 $screen.val($screen.val() + character);
                                 //$('.nameField').val(_composeHangul($('.nameField').val()));
-                                $screen.val(Hangul.a($screen.val()));
+                                $screen.val(_composeHangul($screen.val()));
                             });
                             break;
 
@@ -297,27 +298,40 @@
         }
     };
 
+    // 한글 자,모 합성
+    // @param
+    // input(String) -> user's input inserted by virtual keyboard
+    // @return
+    // result(String) ->
+
     var _composeHangul = function (input) {
 
-        var context = [],
-            _charoffset = 0xAC00,                   //  44032 가
-            _choSung = [
-                'ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ',
-                'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ',
-                'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'
-            ],  // 19
-            _jungSung = [
+        var offset = 0xAC00;
+
+        var choSung = [
+                'ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ',
+                'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ',
+                'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ',
+                'ㅍ', 'ㅎ'
+            ],
+            jungSung = [
                 'ㅏ', 'ㅐ', 'ㅑ', 'ㅒ', 'ㅓ', 'ㅔ',
                 'ㅕ', 'ㅖ', 'ㅗ', 'ㅘ', 'ㅙ', 'ㅚ',
                 'ㅛ', 'ㅜ', 'ㅝ', 'ㅞ', 'ㅟ', 'ㅠ',
                 'ㅡ', 'ㅢ', 'ㅣ'
-            ],  // 21
-            _jongSung = [
+            ],
+            jongSung = [
                 '', 'ㄱ', 'ㄲ', 'ㄳ', 'ㄴ', 'ㄵ', 'ㄶ',
                 'ㄷ', 'ㄹ', 'ㄺ', 'ㄻ', 'ㄼ', 'ㄽ', 'ㄾ',
                 'ㄿ', 'ㅀ', 'ㅁ', 'ㅂ', 'ㅄ', 'ㅅ', 'ㅆ',
                 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'
-            ],  // 28
+            ],
+            consonants = [
+                'ㄱ', 'ㄲ', 'ㄳ', 'ㄴ', 'ㄵ', 'ㄶ', 'ㄷ', 'ㄸ',
+                'ㄹ', 'ㄺ', 'ㄻ', 'ㄼ', 'ㄽ', 'ㄾ', 'ㄿ', 'ㅀ',
+                'ㅁ', 'ㅂ', 'ㅃ', 'ㅄ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ',
+                'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'
+            ],
             _composedVowel = {
                 ㅗㅏ: 'ㅘ',
                 ㅗㅐ: 'ㅙ',
@@ -342,12 +356,8 @@
                 ㅅㅅ: 'ㅆ'
             };
 
-        function combineChar(cho, jung, jong) {
-            var result;
-            result = _charoffset + ($.inArray(cho, _choSung) * 21 * 28) + ($.inArray(jung, _jungSung) * 28) + $.inArray(jong, _jongSung);
-            //console.log(result);
-            result = String.fromCharCode(result);
-            return result;
+        function _completeHangul(unicode) {             // 가 ~ 힣
+            return 0xAC00 <= unicode && unicode <= 0xd7a3;
         }
 
         function _isComposeVowel(first, second) {
@@ -358,41 +368,8 @@
             return _composedConsonant[first + second] ? _composedConsonant[first + second] : false;
         }
 
-
-        /*
-         if(한글)
-         if(자음 case:1)
-         초성
-         if(자음)
-         초성
-         해당 자음을 가지고 go to case 1
-         else(모음 case 3)
-         초+중
-         if(모음)
-         if(모음 && 합성 가능)
-         초+중(합성모음)
-         if(자음)
-         초+중+종
-         if(초성이 아닌 자음)
-         초+중+종
-         go to case 2
-         else(초성인 자음)
-         초+중+종
-         해당 자음을 가지고 go to case 1
-         else(모음)
-         go to case 2
-         else(합성 불가능한 모음)
-         초+중
-         go to case 2
-         else(자음)
-         초+중+종
-         else(모음 case:2)
-         다음 문자로
-
-         else(한글아님)
-         */
-        function _isCho(input) {
-            var num = $.inArray(input, _choSung);
+        function _isConsonant(inputChar){
+            var num = $.inArray(inputChar, consonants);
             if (num >= 0) {
                 return num;
             }
@@ -401,8 +378,8 @@
             }
         }
 
-        function _isJung(input) {
-            var num = $.inArray(input, _jungSung);
+        function _isCho(inputChar) {
+            var num = $.inArray(inputChar, choSung);
             if (num >= 0) {
                 return num;
             }
@@ -411,8 +388,8 @@
             }
         }
 
-        function _isJong(input) {
-            var num = $.inArray(input, _jongSung);
+        function _isJung(inputChar) {
+            var num = $.inArray(inputChar, jungSung);
             if (num >= 0) {
                 return num;
             }
@@ -421,9 +398,447 @@
             }
         }
 
-        //context = assemble(input);
-        return context;
+        function _isJong(inputChar) {
+            var num = $.inArray(inputChar, jongSung);
+            if (num >= 0) {
+                return num;
+            }
+            else {
+                return -1;
+            }
+        }
+
+        function _makeHangul(index) { // complete_index + 1부터 index까지를 greedy하게 한글로 만든다.
+
+            var code,
+                cho,
+                jung1,
+                jung2,
+                jong1 = 0,
+                jong2,
+                hangul = ''
+                ;
+            if (complete_index + 1 > index) {
+                return;
+            }
+            for (var step = 1; ; step++) {
+                if (step === 1) {
+                    cho = array[complete_index + step].charCodeAt(0);
+                    if (_isJung(cho)) { // 첫번째 것이 모음이면 1) ㅏ같은 경우이거나 2) ㅙ같은 경우이다
+                        if (complete_index + step + 1 <= index && _isJung(jung1 = array[complete_index + step + 1].charCodeAt(0))) { //다음것이 있고 모음이면
+                            result.push(String.fromCharCode(_isJungJoinable(cho, jung1)));
+                            complete_index = index;
+                            return;
+                        } else {
+                            result.push(array[complete_index + step]);
+                            complete_index = index;
+                            return;
+                        }
+                    } else if (!_isCho(cho)) {
+                        result.push(array[complete_index + step]);
+                        complete_index = index;
+                        return;
+                    }
+                    hangul = array[complete_index + step];
+                } else if (step === 2) {
+                    jung1 = array[complete_index + step].charCodeAt(0);
+                    if (_isCho(jung1)) { //두번째 또 자음이 오면 ㄳ 에서 ㅅ같은 경우이다
+                        cho = _isJongJoinable(cho, jung1);
+                        hangul = String.fromCharCode(cho);
+                        result.push(hangul);
+                        complete_index = index;
+                        return;
+                    } else {
+                        hangul = String.fromCharCode((CHO_HASH[cho] * 21 + JUNG_HASH[jung1]) * 28 + HANGUL_OFFSET);
+                    }
+                } else if (step === 3) {
+                    jung2 = array[complete_index + step].charCodeAt(0);
+                    if (_isJungJoinable(jung1, jung2)) {
+                        jung1 = _isJungJoinable(jung1, jung2);
+                    } else {
+                        jong1 = jung2;
+                    }
+                    hangul = String.fromCharCode((CHO_HASH[cho] * 21 + JUNG_HASH[jung1]) * 28 + JONG_HASH[jong1] + HANGUL_OFFSET);
+                } else if (step === 4) {
+                    jong2 = array[complete_index + step].charCodeAt(0);
+                    if (_isJongJoinable(jong1, jong2)) {
+                        jong1 = _isJongJoinable(jong1, jong2);
+                    } else {
+                        jong1 = jong2;
+                    }
+                    hangul = String.fromCharCode((CHO_HASH[cho] * 21 + JUNG_HASH[jung1]) * 28 + JONG_HASH[jong1] + HANGUL_OFFSET);
+                } else if (step === 5) {
+                    jong2 = array[complete_index + step].charCodeAt(0);
+                    jong1 = _isJongJoinable(jong1, jong2);
+                    hangul = String.fromCharCode((CHO_HASH[cho] * 21 + JUNG_HASH[jung1]) * 28 + JONG_HASH[jong1] + HANGUL_OFFSET);
+                }
+
+                if (complete_index + step >= index) {
+                    result.push(hangul);
+                    complete_index = index;
+                    return;
+                }
+            }
+        }
+
+        function _disassemble(input) {
+
+            var result = [],
+                temp,
+                cho,
+                jung,
+                jong;
+
+            // input string 길이만큼 loop
+            for(var i=0; i<input.length; i+=1){
+
+                temp = input[i].charCodeAt(0);
+                // 완전한 한글 문자인 경우
+                if(_completeHangul(temp)){
+                    temp -= offset;   // 인덱스의 문자 -'가'
+                    jong = temp % 28;                         // 종성의 인덱스
+                    jung = (temp - jong) / 28 % 21;           // 중성의 인덱스
+                    cho = Math.floor((temp - jong) / 28 / 21);              // 초성의 인덱스
+                    result.push(choSung[cho]);                // 해당 초성 배열을 넣음
+                    switch (jungSung[jung]){                  // 이중모음 / 단모음
+                        case 'ㅘ':
+                            result.push('ㅗ');
+                            result.push('ㅏ');
+                            break;
+                        case 'ㅙ':
+                            result.push('ㅗ');
+                            result.push('ㅐ');
+                            break;
+                        case 'ㅚ':
+                            result.push('ㅗ');
+                            result.push('l');
+                            break;
+                        case 'ㅝ':
+                            result.push('ㅜ');
+                            result.push('ㅓ');
+                            break;
+                        case 'ㅞ':
+                            result.push('ㅜ');
+                            result.push('ㅔ');
+                            break;
+                        case 'ㅟ':
+                            result.push('ㅜ');
+                            result.push('ㅣ');
+                            break;
+                        case 'ㅢ':
+                            result.push('ㅡ');
+                            result.push('ㅣ');
+                            break;
+                        default:
+                            result.push(jungSung[jung]);
+                    }
+
+                    if(jong>0){                               // 종성이 있는 경우
+
+                        switch (jongSung[jong]){
+                            case 'ㄳ':
+                                result.push('ㄱ');
+                                result.push('ㅅ');
+                                break;
+                            case 'ㄵ':
+                                result.push('ㄴ');
+                                result.push('ㅈ');
+                                break;
+                            case 'ㄶ':
+                                result.push('ㄴ');
+                                result.push('ㅎ');
+                                break;
+                            case 'ㄺ':
+                                result.push('ㄹ');
+                                result.push('ㄱ');
+                                break;
+                            case 'ㄻ':
+                                result.push('ㄹ');
+                                result.push('ㅁ');
+                                break;
+                            case 'ㄼ':
+                                result.push('ㄹ');
+                                result.push('ㅂ');
+                                break;
+                            case 'ㄽ':
+                                result.push('ㄹ');
+                                result.push('ㅅ');
+                                break;
+                            case 'ㄾ':
+                                result.push('ㄹ');
+                                result.push('ㅌ');
+                                break;
+                            case 'ㄿ':
+                                result.push('ㄹ');
+                                result.push('ㅍ');
+                                break;
+                            case 'ㅀ':
+                                result.push('ㄹ');
+                                result.push('ㅎ');
+                                break;
+                            case 'ㅄ':
+                                result.push('ㅂ');
+                                result.push('ㅅ');
+                                break;
+                            default:
+                                result.push(jongSung[jong]);
+                        }
+
+                    }
+                }
+                // 해당 인덱스의 내용이 자음일 경우
+                else if(_isConsonant(input[i])>=0){
+                    // 초성인 경우
+                    if(_isCho(input[i])>=0){
+                        temp = choSung[_isCho(input[i])];
+                    }
+                    // 종성인 경우
+                    else{
+                        temp = jongSung[_isJong(input[i])];
+                    }
+                    result.push(temp);
+                }
+                // 모음이거나 다른 문자일 경우는 그냥 한 문자 처리한다.
+                else{
+                    if(_isComposeVowel(input[i])){
+                        switch (input[i]){                  // 이중모음 / 단모음
+                            case 'ㅘ':
+                                result.push('ㅗ');
+                                result.push('ㅏ');
+                                break;
+                            case 'ㅙ':
+                                result.push('ㅗ');
+                                result.push('ㅐ');
+                                break;
+                            case 'ㅚ':
+                                result.push('ㅗ');
+                                result.push('l');
+                                break;
+                            case 'ㅝ':
+                                result.push('ㅜ');
+                                result.push('ㅓ');
+                                break;
+                            case 'ㅞ':
+                                result.push('ㅜ');
+                                result.push('ㅔ');
+                                break;
+                            case 'ㅟ':
+                                result.push('ㅜ');
+                                result.push('ㅣ');
+                                break;
+                            case 'ㅢ':
+                                result.push('ㅡ');
+                                result.push('ㅣ');
+                                break;
+                        }
+                    }
+                    else{
+                        temp = input[i];
+                        result.push(temp);
+                    }
+                }
+            }
+            result = result.join('');
+            return result;
+        }
+
+        //////
+
+        var result = [];
+        var inputLength = input.length;
+        var current,
+            previous;
+        var stage = 0;
+
+        input = _disassemble(input);
+
+        for (var i = 0; i < inputLength; i += 1) {
+
+            current = input[i];
+            if(_isCho(current)>=0 && _isJung(current)>=0 && _isJong(current)>=0){
+
+            }
+            result.push(current);
+
+            if (i > 0) {
+                previous = input[i - 1];
+            }
+
+            if (_isComposeVowel(previous, current)) {
+                result.pop();
+                result.pop();
+                result.push(_isComposeVowel(previous, current));
+            }
+
+        }
+
+        for (var i = 0; i < length; i++) {
+            code = array[i].charCodeAt(0);
+            if (!_isCho(code) && !_isJung(code) && !_isJong(code)) { //초, 중, 종성 다 아니면
+                _makeHangul(i - 1);
+                _makeHangul(i);
+                stage = 0;
+                continue;
+            }
+            //console.log(stage, array[i]);
+            if (stage === 0) { // 초성이 올 차례
+                if (_isCho(code)) { // 초성이 오면 아무 문제 없다.
+                    stage = 1;
+                } else if (_isJung(code)) {
+                    // 중성이오면 ㅐ 또는 ㅘ 인것이다. 바로 구분을 못한다. 따라서 특수한 stage인 stage4로 이동
+                    stage = 4;
+                }
+            } else if (stage == 1) { //중성이 올 차례
+                if (_isJung(code)) { //중성이 오면 문제없음 진행.
+                    stage = 2;
+                } else { //아니고 자음이오면 ㄻ같은 경우가 있고 ㄹㅋ같은 경우가 있다.
+                    if (_isJongJoinable(previous_code, code)) {
+                        // 합쳐질 수 있다면 ㄻ 같은 경우인데 이 뒤에 모음이 와서 ㄹ마 가 될수도 있고 초성이 올 수도 있다. 따라서 섣불리 완성할 수 없다. 이땐 stage5로 간다.
+                        stage = 5;
+                    } else { //합쳐질 수 없다면 앞 글자 완성 후 여전히 중성이 올 차례
+                        _makeHangul(i - 1);
+                    }
+                }
+            } else if (stage == 2) { //종성이 올 차례
+                if (_isJong(code)) { //종성이 오면 다음엔 자음 또는 모음이 온다.
+                    stage = 3;
+                } else if (_isJung(code)) { //그런데 중성이 오면 앞의 모음과 합칠 수 있는지 본다.
+                    if (_isJungJoinable(previous_code, code)) { //합칠 수 있으면 여전히 종성이 올 차례고 그대로 진행
+                    } else { // 합칠 수 없다면 오타가 생긴 경우
+                        _makeHangul(i - 1);
+                        stage = 4;
+                    }
+                } else { // 받침이 안되는 자음이 오면 ㄸ 같은 이전까지 완성하고 다시시작
+                    _makeHangul(i - 1);
+                    stage = 1;
+                }
+            } else if (stage == 3) { // 종성이 하나 온 상태.
+                if (_isJong(code)) { // 또 종성이면 합칠수 있는지 본다.
+                    if (_isJongJoinable(previous_code, code)) { //합칠 수 있으면 계속 진행. 왜냐하면 이번에 온 자음이 다음 글자의 초성이 될 수도 있기 때문
+                        _makeHangul(i);
+                        stage = 1;
+                    } else { //없으면 한글자 완성
+                        _makeHangul(i - 1);
+                        stage = 1; // 이 종성이 초성이 되고 중성부터 시작
+                    }
+                } else if (_isCho(code)) { // 초성이면 한글자 완성.
+                    _makeHangul(i - 1);
+                    stage = 1; //이 글자가 초성이되므로 중성부터 시작
+                } else if (_isJung(code)) { // 중성이면 이전 종성은 이 중성과 합쳐지고 앞 글자는 받침이 없다.
+                    _makeHangul(i - 2);
+                    stage = 2;
+                }
+            } else if (stage == 4) { // 중성이 하나 온 상태
+                if (_isJung(code)) { //중성이 온 경우
+                    if (_isJungJoinable(previous_code, code)) { //이전 중성과 합쳐질 수 있는 경우
+                        _makeHangul(i);
+                        stage = 0;
+                    } else { //중성이 왔지만 못합치는 경우. ㅒㅗ 같은
+                        _makeHangul(i - 1);
+                    }
+                } else { // 아니면 자음이 온 경우.
+                    _makeHangul(i - 1);
+                    stage = 1;
+                }
+            } else if (stage == 5) { // 초성이 연속해서 두개 온 상태 ㄺ
+                if (_isJung(code)) { //이번에 중성이면 ㄹ가
+                    _makeHangul(i - 2);
+                    stage = 2;
+                } else {
+                    _makeHangul(i - 1);
+                    stage = 1;
+                }
+            }
+            previous_code = code;
+        }
+        _makeHangul(i-1);
+
+        result = result.join('');
+        return result;
     };
+    /*
+     for(var i=0; i<inputLength;i+=1){
+     current = input[i];
+     // 한글이 아닌 경우
+     if (_isCho(current) < 0&& _isJung(current) < 0 && _isJong(current) < 0){
+     _make(i-1);
+     _make(i);
+     stage = 0;  // 초성 판단이 가장 먼저
+     continue;
+     }
+     if(stage === 0){    // 현재 커서가 초성인지
+     if(_isCho(current)>=0){ // 초성인 경우
+     stage = 1;  // 중성 판단으로
+     }
+     else if(_isJung(current) >=0){
+     stage =4;   // 중성이 하나 온 경우
+     }
+     }
+     else if(stage === 1){   // 현재 커서가 중성인지
+     if(_isJung(current)>=0){    // 모음이 온 경우
+     stage = 2;  // 종성 판단
+     }
+     else{   // 또 자음인 경우
+     // 합성 가능한 자음인 경우
+     if(_isComposeConsonant(previous, current)){
+     stage =5; // 합성자음인 경우
+     }else {
+     _make(i-1); // 합성 불가능한 경우 전것까지 문자 합성
+     }
+     }
+     }
+     else if(stage === 2){   // 현재 커서가 종성인지
+     if(_isJong(current)>=0){
+     stage=3; // 종성 다음에 자음이든 모음이든 올 수 있음
+     }
+     else if(_isJung(current)>=0){
+     _isComposeVowel(previous, current){
+
+     }
+     }
+     }
+     }
+
+     function combineChar(cho, jung, jong) {
+     var result;
+     result = _charoffset + ($.inArray(cho, _choSung) * 21 * 28) + ($.inArray(jung, _jungSung) * 28) + $.inArray(jong, _jongSung);
+     //console.log(result);
+     result = String.fromCharCode(result);
+     return result;
+     }
+
+     if(한글)
+     if(자음 case:1)
+     초성
+     if(자음)
+     초성
+     해당 자음을 가지고 go to case 1
+     else(모음 case 3)
+     초+중
+     if(모음)
+     if(모음 && 합성 가능)
+     초+중(합성모음)
+     if(자음)
+     초+중+종
+     if(초성이 아닌 자음)
+     초+중+종
+     go to case 2
+     else(초성인 자음)
+     초+중+종
+     해당 자음을 가지고 go to case 1
+     else(모음)
+     go to case 2
+     else(합성 불가능한 모음)
+     초+중
+     go to case 2
+     else(자음)
+     초+중+종
+     else(모음 case:2)
+     다음 문자로
+
+     else(한글아님)
+     */
+
 
     //
     //  private methods
@@ -514,6 +929,7 @@
                     html += '<span class="' + keyboardType;
 
                     ary.forEach(function (item, idx) {              // current item
+
                         switch (item) {
 
                             case '\u232B':

@@ -1,40 +1,50 @@
 
 # 자바스크립트 가상 보안 키보드
 
-    Virtual keypad implemented by javascript & jquery
+   Virtual keypad implemented by javascript, jquery
 
-# 명세
+## 명세
 
-    html form에서 입력 시의 요구사항에 따라서 동적으로 생성되는 키보드 구현
-    
-# 사용법
-
-   <b>초기화</b>
-
-        $(...).SVkeyboard.init(userOptions)
-        $.SVkeyboard.init(userOptions)
-        
-        userOptions(Object)
-       
-        _isRandom(boolean) : 기본 설정은 false로 되어 있으며, 초기화 시 {_isRandom:true}로 초기화 할 경우에 키보드의 배열이 랜덤하게 바뀌어 출력된다.
-   
-   위의 명령어를 입력하여 초기화 가능하다.
+   웹 페이지 상에서 키보드를 대체하여 문자를 입력할 수 있는 여러 종류의 입력기 구현
+   <br>
    
-   <b>제거</b>
+## 사용법
 
-        $(...).SVkeyboard.detach()
-        $.SVkeyboard.detach()
+
+   1. 키보드를 사용하고자 하는 html 페이지에 아래와 같이 스크립트 추가
+
+     <script type="text/javascript" src="node_modules/jquery/dist/jquery.js"></script>
+     <script type='text/javascript' src="hangul.js"></script>
+     <script type='text/javascript' src="jquery.secureKeyboard.js"></script>
+   <br>
+   
+   2. 초기화
+   
+    $(...).SVkeyboard.init(userOptions)
+    $.SVkeyboard.init(userOptions)
+   
+   userOptions를 {_isRandom:true}로 초기화 할 경우에 키보드의 배열이 랜덤하게 바뀌어 출력된다.
+   
+   <br>
+   
+   3. 제거
+   
+    $(...).SVkeyboard.detach()
+    $.SVkeyboard.detach()
         
-   위 명령어들을 입력하여 현재 문서에서 제거 가능하다.
+   위의 명령어들을 입력하여 현재 문서에서 제거 가능하다.
+   
+   <br>
+   
+   4. 별칭
+   
+    $.svk.init()
+    $.SVkeyboard.init()
+    
+   모든 명령어들은 위와 같이 줄여 사용 가능하다.
         
-# 진행중인 이슈
- 
-    1. optimizing this file with many design pattern
+## 데모 페이지
+현재 진행중인 프로젝트는 아래의 페이지에서 확인할 수 있습니다
 
-# 완료된 이슈
+https://m2soft.herokuapp.com
 
-    1. make responsive view to several platforms (ex. phone, tablet, pc...)
-
-    2. keypad's basic function implementation
-
-    3. make this files to library for easily use

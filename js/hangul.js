@@ -1,5 +1,9 @@
 /**
- * Created by jychoi on 2017. 2. 3..
+ * Hangul.js
+ * https://github.com/e-/Hangul.js
+ *
+ * Copyright 2016, Jaemin Jo
+ * under the MIT license.
  */
 (function(){
     'use strict';
