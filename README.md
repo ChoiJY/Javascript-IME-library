@@ -11,26 +11,26 @@
 ## 사용법
 
 
-   1. 키보드를 사용하고자 하는 html 페이지에 아래와 같이 스크립트 추가
+   1. setup
 
-     <script type="text/javascript" src="node_modules/jquery/dist/jquery.js"></script>
-     <script type='text/javascript' src="hangul.js"></script>
-     <script type='text/javascript' src="jquery.secureKeyboard.js"></script>
-   <br>
+            <script type="text/javascript" src="node_modules/jquery/dist/jquery.js"></script>
+            <script type='text/javascript' src="hangul.js"></script>
+            <script type='text/javascript' src="jquery.secureKeyboard.js"></script>
+            <br>
    
-   2. 초기화
+   2. initialization
    
-    $(...).SVkeyboard.init(userOptions)
-    $.SVkeyboard.init(userOptions)
+            $(...).SVkeyboard.init(userOptions)
+            $.SVkeyboard.init(userOptions)
    
    userOptions를 {_isRandom:true}로 초기화 할 경우에 키보드의 배열이 랜덤하게 바뀌어 출력된다.
    
    <br>
    
-   3. 제거
+   3. terminalation
    
-    $(...).SVkeyboard.detach()
-    $.SVkeyboard.detach()
+            $(...).SVkeyboard.detach()
+            $.SVkeyboard.detach()
         
    위의 명령어들을 입력하여 현재 문서에서 제거 가능하다.
    
@@ -38,8 +38,8 @@
    
    4. 별칭
    
-    $.svk.init()
-    $.SVkeyboard.init()
+            $.svk.init()
+            $.SVkeyboard.init()
     
    모든 명령어들은 위와 같이 줄여 사용 가능하다.
         
