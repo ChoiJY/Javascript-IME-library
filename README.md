@@ -19,8 +19,9 @@
             <script type="text/javascript" src="node_modules/jquery/dist/jquery.js"></script>
             <script type='text/javascript' src="hangul.js"></script>
             <script type='text/javascript' src="jquery.secureKeyboard.js"></script>
-            
-   <br>
+   
+   keyboard를 사용할 html 페이지에 위의 스크립트를 추가합니다.
+   <br>
    
    2. initialization
    
