@@ -3,9 +3,12 @@
 
    Virtual keypad implemented by javascript, jquery
 
+   <br>
+
 ## 명세
 
    웹 페이지 상에서 키보드를 대체하여 문자를 입력할 수 있는 여러 종류의 입력기 구현
+   
    <br>
    
 ## 사용법
@@ -16,6 +19,8 @@
             <script type="text/javascript" src="node_modules/jquery/dist/jquery.js"></script>
             <script type='text/javascript' src="hangul.js"></script>
             <script type='text/javascript' src="jquery.secureKeyboard.js"></script>
+            
+   <br>
    
    2. initialization
    
@@ -41,6 +46,8 @@
             $.SVkeyboard.init()
     
    모든 명령어들은 위와 같이 줄여 사용 가능하다.
+   
+   <br>
         
 ## 데모 페이지
 현재 진행중인 프로젝트는 아래의 페이지에서 확인할 수 있습니다
