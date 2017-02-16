@@ -4,7 +4,7 @@
   "description": "secure virtual keypad written by js, jquery",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/jshint/bin/jshint ./js/jquery.secureKeyboard.js"
   },
   "repository": {
     "type": "git",
@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/ChoiJY/2016-2017-m2soft-intership#readme",
   "devDependencies": {
-    "grunt": "^1.0.1"
+    "grunt": "^1.0.1",
+    "jshint": "^2.9.4"
   }
 }

@@ -37,6 +37,12 @@ form{
     width: 100%;
     list-style: none;
     text-align: center;
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    /* ie10 */
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .keyboard span.null{
