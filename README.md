@@ -19,9 +19,9 @@
             <script type="text/javascript" src="node_modules/jquery/dist/jquery.js"></script>
             <script type='text/javascript' src="hangul.js"></script>
             <script type='text/javascript' src="jquery.secureKeyboard.js"></script>
-   
-   keyboard를 사용할 html 페이지에 위의 스크립트를 추가합니다.
-   <br>
+  keyboard를 사용할 html 페이지에 위의 스크립트를 추가합니다.
+   
+   <br>
    
    2. initialization
    
@@ -36,8 +36,7 @@
    
             $(...).SVkeyboard.detach()
             $.SVkeyboard.detach()
-        
-   위의 명령어들을 입력하여 현재 문서에서 제거 가능하다.
+   위의 명령어들을 입력하여 현재 문서에서 제거 가능하다.
    
    <br>
    
