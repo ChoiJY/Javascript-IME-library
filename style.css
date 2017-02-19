@@ -28,7 +28,7 @@ form{
 }
 
 .keyboard{
-    z-index: 100;
+    z-index: 10000;
     opacity: 1;
     padding-top: 0.5%;
     background: white;

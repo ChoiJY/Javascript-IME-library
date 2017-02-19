@@ -78,6 +78,7 @@
                     switch (event.target.className) {
                         case 'nameField':
 
+                            $('.nameField').blur();     // mobile keypad not exist
                             if (options._isRandom) {
                                 generatedHTML = _writeHTML('letter', _randomLayout('letter', options._alphabets));
                             }
@@ -88,12 +89,13 @@
 
                             if (($keyboard.children().length) === 0) {
                                 // 폼 아래에 충분한 공간이 있을 경우에는 그냥 하단에 키보드를 생성
-                                if (event.clientY < (window.innerHeight * 0.7) && (window.innerHeight > 500)) {
+                                if ((window.innerHeight - event.clientY) > 300) {
                                     $keyboard.append(generatedHTML);
                                     $keyboard.css('top', window.innerHeight - $keyboard.height());
                                 }
                                 // 폼 아래에 충분한 공간이 없을 경우에는 키보드 만큼 스크롤을 내리고, 하단에 키보드를 생성시킨다.
                                 else {
+                                    console.log((window.innerHeight - event.clientY))
                                     $keyboard.append(generatedHTML);
                                     document.body.scrollTop = $keyboard.height();
                                     $keyboard.css('top', window.innerHeight - $keyboard.height());
@@ -153,6 +155,7 @@
 
                         case 'hangulField':
 
+                            $('.hangulField').blur();     // mobile keypad not exist
                             if (options._isRandom) {
                                 generatedHTML = _writeHTML('symbol', _randomLayout('symbol', options._hangul));
                             }
@@ -163,7 +166,8 @@
                             // 기존에 키보드가 없는 경우
                             if (($keyboard.children().length) === 0) {
                                 // 폼 아래에 충분한 공간이 있을 경우에는 그냥 하단에 키보드를 생성
-                                if (event.clientY < (window.innerHeight * 0.7) && (window.innerHeight > 500)) {
+
+                                if ((window.innerHeight - event.clientY) > 400) {
                                     $keyboard.append(generatedHTML);
                                     $keyboard.css('top', window.innerHeight - $keyboard.height());
                                 }
@@ -216,11 +220,13 @@
 
                                 // Add the character
                                 $screen.val($screen.val() + character);
-                                $screen.val(Hangul.a($screen.val()));
+                                $screen.val(Hangul.assemble($screen.val()));
                             });
                             break;
 
                         case 'pwdField':
+
+                            $('.pwdField').blur();     // mobile keypad not exist
 
                             if (options._isRandom) {
                                 generatedHTML = _writeHTML('number', _randomLayout('number', options._numpads));
@@ -232,7 +238,8 @@
                             // if keyboard is already opened, close present keyboard.
                             if (($keyboard.children().length) === 0) {
                                 // attach keyboard to upper side form
-                                if (event.clientY < (window.innerHeight * 0.7) && (window.innerHeight > 500)) {
+                                // 남은 공간이 좌항의
+                                if ((window.innerHeight - event.clientY) > 300) {
                                     $keyboard.append(generatedHTML);
                                     $keyboard.css('top', window.innerHeight - $keyboard.height());
                                 }
@@ -708,7 +715,9 @@
                     // 중성이오면 합성모음 판단하는 케이스로
                     stage = 4;
                 }
-            } else if (stage === 1) {               // 현재 문자가 중성인지 아닌 지 판단
+            }
+
+            else if (stage === 1) {               // 현재 문자가 중성인지 아닌 지 판단
                 if (_isJung(code) >= 0) {           // 중성이 온 경우
                     stage = 2;
                 } else {                            // 합성자음 여부 판단
@@ -719,7 +728,9 @@
                         _makeHangul(i - 1);
                     }
                 }
-            } else if (stage === 2) {               // 현재 문자가 종성인지 아닌 지 판단
+            }
+
+            else if (stage === 2) {               // 현재 문자가 종성인지 아닌 지 판단
                 if (_isJong(code) >= 0) {           // 종성이 왔다면 다음 문자는 자,모음 이 와야함
                     stage = 3;
                 } else if (_isJung(code) >= 0) {    // 모음이 오면 앞의 모음과 합칠 수 있는지 본다.
@@ -732,7 +743,9 @@
                     _makeHangul(i - 1);
                     stage = 1;
                 }
-            } else if (stage === 3) {               // 종성이 하나 온 상태.
+            }
+
+            else if (stage === 3) {               // 종성이 하나 온 상태.
                 if (_isCho(code) >= 0) {            // 또 자음이면 합칠수 있는지 본다. 키보드 입력으론 초성밖에 받을 수 없다
                     if (_isComposeConsonant(previous_code, code)) {} //합칠 수 있으면 계속 진행. 왜냐하면 이번에 온 자음이 다음 글자의 초성이 될 수도 있기 때문}
                     else {                        // 없으면 한글자 완성
@@ -744,7 +757,9 @@
                     _makeHangul(i - 2);
                     stage = 2;
                 }
-            } else if (stage === 4) { // 중성이 하나 온 상태
+            }
+
+            else if (stage === 4) { // 중성이 하나 온 상태
                 if (_isJung(code)) { //중성이 온 경우
                     if (_isComposeVowel(previous_code, code)) { //이전 중성과 합쳐질 수 있는 경우
                         _makeHangul(i);
@@ -756,7 +771,9 @@
                     _makeHangul(i - 1);
                     stage = 1;
                 }
-            } else if (stage == 5) { // 초성이 연속해서 두개 온 상태 ㄺ
+            }
+
+            else if (stage === 5) { // 초성이 연속해서 두개 온 상태 ㄺ
                 if (_isJung(code)) { //이번에 중성이면 ㄹ가
                     _makeHangul(i - 2);
                     stage = 2;

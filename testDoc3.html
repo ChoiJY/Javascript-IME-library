@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta property="og:title" content="Daum 회원가입">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="http://m1.daumcdn.net/svc/image/U03/common_icon/5587C4E4012FCD0001">
+    <meta property="og:image:secure_url" content="https://m1.daumcdn.net/svc/image/U03/common_icon/5587C4E4012FCD0001">
+    <meta property="og:description" content="여기를 눌러 링크를 확인하세요.">
+    <title>가입 정보 입력 | Daum 회원가입</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Cache-Control" content="no-cache"/>
+    <meta http-equiv="Expires" content="0"/>
+    <meta http-equiv="Pragma" content="no-cache"/>
+    <meta name="description" content="Daum 회원가입">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="style3.css">
+</head>
+<body>
+<div id="kakaoIndex"> <!-- 웹접근성용 바로가기 링크 모음 -->
+    <a href="#kakaoBody">본문 바로가기</a>
+</div>
+
+<div id="kakaoWrap" class="join_personal">
+    <div id="kakaoHead">
+        <div class="inner_head">
+            <h1>
+                <a href="http://www.daum.net" id="daumServiceLogo" class="ico_join"><span class="ir_wa">DAUM</span></a>
+            </h1>
+        </div>
+    </div>
+    <hr class="hide"><h2 class="screen_out">회원가입 안내 본문</h2>
+    <div id="kakaoBody" class="cont_personal">
+        <div class="paging_step">
+            <span class="ico_join ico_paging"></span>
+            <span class="ico_join ico_paging on"></span>
+            <span class="ico_join ico_paging"></span>
+        </div>
+        <div class="wrap_tit">
+            <h3 class="tit_join">가입 정보 입력</h3>
+            <div class="txt_desc">
+                로그인 정보 및 가입 정보를 입력하세요.
+            </div>
+        </div>
+        <form id="joinInput" name="joinInput" action="/join/signup" method="POST">
+            <fieldset class="fld_comm">
+                <legend class="screen_out">가입 정보</legend>
+                <div class="wrap_info">
+                    <div class="box_info">
+                        <dl class="item_info">
+                            <dt><label for="inpID" class="lab_info">Daum 아이디</label></dt>
+                            <dd>
+                                <div class="wrap_inp">
+                                    <label for="daumId" class="txt_placeholder "></label>
+                                    <!-- 텍스트 입력 시 .screen_out  -->
+                                    <input type="text" id="daumId" name="daumId" class="hangulField"
+                                           value="" autocomplete="off" maxlength="15">
+                                    <span class="txt_fix txt_domain">@daum.net</span>
+                                    <span class="mark_valid" style="display: none;"><span class="ico_join ico_valid"></span><span
+                                            class="screen_out">유효</span></span>
+                                </div>
+                                <p class="txt_message" style="display:none;">이미 사용된 Daum 메일입니다. 다른 아이디를 입력하세요.</p>
+                                <div id="recommendIds" style="display:none;">
+                                    <div class="txt_message">
+                                    <span class="txt_recommend">아이디 추천 :
+                                        <a href="javascript:;" id="recommendId1"><span class='txt_other'></span></a>
+                                        <a href="javascript:;" id="recommendId2"><span class='txt_other'></span></a>
+                                    </span>
+                                    </div>
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl class="item_info info_password">
+                            <dt><label for="password1" class="lab_info">비밀번호</label></dt>
+                            <dd>
+                                <div class="wrap_inp">
+                                    <label for="password1"
+                                           class="txt_placeholder "></label> <!-- 텍스트 입력 시 .screen_out  -->
+                                    <input type="password" id="password1" name="password1" class="pwdField"
+                                           value="" maxlength="32">
+                                    <span class="mark_valid" style="display: none;">불가</span>
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl class="item_info info_password">
+                            <dt><label for="password2" class="lab_info">비밀번호 재확인</label></dt>
+                            <dd>
+                                <div class="wrap_inp">
+                                    <label for="password2"
+                                           class="txt_placeholder "></label> <!-- 텍스트 입력 시 .screen_out  -->
+                                    <input type="password" id="password2" name="password2" class="pwdField"
+                                           value="" maxlength="32">
+                                    <span class="mark_valid" style="display: none;">불일치</span>
+                                </div>
+                                <p class="txt_message" style="display: none;"></p>
+                            </dd>
+                        </dl>
+                    </div>
+                    <div class="box_info">
+                        <dl class="item_info">
+                            <dt><label for="inpNmae" class="lab_info">이름</label></dt>
+                            <dd>
+                                <div class="wrap_inp">
+                                    <label for="name" class="txt_placeholder "></label>
+                                    <!-- 텍스트 입력 시 .screen_out  -->
+                                    <input type="text" id="name" name="name" class="nameField" value="" maxlength="30">
+                                    <span class="mark_valid"><span class="ico_join ico_valid"></span><span class="screen_out">유효</span></span>
+                                </div>
+                                <p class="txt_message" style="display: none;"></p>
+                            </dd>
+                        </dl>
+                        <dl id="countryListContainer" class="item_info info_phone">
+                            <dt><label for="inpPhone" class="lab_info">휴대폰 번호</label></dt>
+                            <dd>
+                                <div class="wrap_inp">
+                                    <label for="inpPhone" class="txt_placeholder"></label>
+                                    <!-- 텍스트 입력 시 .screen_out  -->
+                                    <a href="javascript:;" class="num_nation" id="numNation">
+                                        <span class="ico_join"></span>
+                                        <span class="link_nationnum"></span>
+                                    </a>
+                                    <input type="hidden" id="mobileNational" name="mobileNational" value="">
+                                    <input type="hidden" id="mobileNationalCode" name="mobileNationalCode" value="">
+                                    <input type="hidden" id="mobileInternationalFormat" name="mobileInternationalFormat" value="">
+                                    <input type="text" id="inpPhone" name="inpPhone" class="pwdField" autocomplete="off">
+                                    <button type="button" id="certBtn" class="btn_check disabled">인증</button>
+                                </div>
+                                <div class="wrap_nationinfo">
+                                    <div class="box_search">
+                                        <span class="ico_join"></span>
+                                        <label for="inpNationInfo" class="txt_placeholder">국가 검색(국가번호, 국가명)</label>
+                                        <!-- 입력 시 .screen_out -->
+                                        <input id="inpNationInfo" type="text" class="inp_nation">
+                                    </div>
+                                    <a href="javascript:;" class="link_nationinfo"></a>
+                                    <ul class="list_nationinfo"></ul>
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl class="item_info info_phone">
+                            <dt><label for="inpCertCode" class="lab_info screen_out">휴대폰 인증 번호</label></dt>
+                            <dd>
+                                <div class="wrap_inp">
+                                    <span class="txt_placeholder"></span> <!-- 텍스트 입력 시 .screen_out  -->
+                                    <input type="text" id="inpCertCode" name="inpCertCode" class="pwdField" maxlength="6"
+                                           autocomplete="off" disabled>
+                                    <button type="button" id="confirmBtn" class="btn_check disabled">확인</button>
+                                    <span class="mark_valid" id="matchedCertCodeText" style="display:none;">일치</span>
+                                    <!-- 입력 완료 시 .disabled 제거 -->
+                                </div>
+                                <p class="txt_message" style="display: none;"></p>
+                            </dd>
+                        </dl>
+                        <dl class="item_info info_email">
+                            <dt><label for="inpEmail" class="lab_info">본인 확인용<br>이메일 주소</label></dt>
+                            <dd>
+                                <div class="wrap_inp">
+                                    <span class="txt_placeholder "></span>
+                                    <!-- 텍스트 입력 시 .screen_out  -->
+                                    <input type="text" id="email" name="email" class="hangulField"
+                                           value="" autocomplete="off">
+                                    <span class="mark_valid"><span class="ico_join ico_valid"></span><span class="screen_out">유효</span></span>
+                                </div>
+                                <p class="txt_message" style="display: none;"></p>
+                            </dd>
+                        </dl>
+
+                    </div>
+                </div>
+                <div class="wrap_btn">
+                    <button type="button" class="link_back"><span class="ico_join"></span>이전으로</button>
+                    <button type="submit" class="btn_comm btn_type1">다음 단계</button>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+
+    <hr class="hide">
+    <div id="kakaoFoot" class="footer_comm" role="contentinfo">
+        <h2 class="screen_out">서비스 이용정보</h2>
+        <a href="http://policy.daum.net/info/info" target="_blank" class="link_info">서비스 약관</a><span class="txt_bar">|</span>
+        <a href="http://policy.daum.net/info_protection/info_protection" target="_blank" class="link_info">개인정보처리방침</a><span class="txt_bar">|</span>
+        <a href="http://cs.daum.net/faq/59/8034.html" target="_blank" class="link_info">회원가입 도움말</a>
+        <div class="txt_copyright">© <a href="http://www.kakaocorp.com/main" class="link_daum" target="_blank">Kakao Corp.</a></div>
+    </div>
+</div>
+<script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+<script src="js/hangul.js"></script>
+<script src="js/jquery.secureKeyboard.js"></script>
+<script>
+    $.svk.init({_isRandom:true})
+</script>
+</body>
+</html>
