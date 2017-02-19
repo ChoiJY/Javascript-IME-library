@@ -13,20 +13,21 @@
    
 ## 사용법
 
-
    1. setup
+          
+         <link rel="stylesheet" type="text/css" href="style.css"/>
+         <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+         <script type='text/javascript' src="hangul.js"></script>
+         <script type='text/javascript' src="jquery.secureKeyboard.js"></script>
 
-            <script type="text/javascript" src="node_modules/jquery/dist/jquery.js"></script>
-            <script type='text/javascript' src="hangul.js"></script>
-            <script type='text/javascript' src="jquery.secureKeyboard.js"></script>
-  keyboard를 사용할 html 페이지에 위의 스크립트를 추가합니다.
+   keyboard를 사용할 html 페이지에 위의 스크립트를 추가합니다.
    
    <br>
    
    2. initialization
    
-            $(...).SVkeyboard.init(userOptions)
-            $.SVkeyboard.init(userOptions)
+          $(...).SVkeyboard.init(userOptions)
+          $.SVkeyboard.init(userOptions)
    
    userOptions를 {_isRandom:true}로 초기화 할 경우에 키보드의 배열이 랜덤하게 바뀌어 출력된다.
    
@@ -34,16 +35,16 @@
    
    3. terminalation
    
-            $(...).SVkeyboard.detach()
-            $.SVkeyboard.detach()
+          $(...).SVkeyboard.detach()
+          $.SVkeyboard.detach()
    위의 명령어들을 입력하여 현재 문서에서 제거 가능하다.
    
    <br>
    
    4. 별칭
    
-            $.svk.init()
-            $.SVkeyboard.init()
+          $.svk.init()
+          $.SVkeyboard.init()
     
    모든 명령어들은 위와 같이 줄여 사용 가능하다.
    
