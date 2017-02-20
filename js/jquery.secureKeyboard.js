@@ -14,6 +14,7 @@
         _defaults: function () {
 
             var _isRandom = false,
+                _key = "abcdefghijklmnopqrstuvwxyz123456",
                 _numpads = [
                     [['1'], ['2'], ['3'], ['\u232B']],
                     [['4'], ['5'], ['6'], ['ENTER']],
@@ -95,7 +96,6 @@
                                 }
                                 // 폼 아래에 충분한 공간이 없을 경우에는 키보드 만큼 스크롤을 내리고, 하단에 키보드를 생성시킨다.
                                 else {
-                                    console.log((window.innerHeight - event.clientY))
                                     $keyboard.append(generatedHTML);
                                     document.body.scrollTop = $keyboard.height();
                                     $keyboard.css('top', window.innerHeight - $keyboard.height());
@@ -149,7 +149,12 @@
                                 $screen.val($screen.val() + character);
                                 //$('.nameField').val(_composeHangul($('.nameField').val()));
                                 //$screen.val(Hangul.a($screen.val()));
-                                $screen.val(_composeHangul($screen.val()));
+                                $screen.val(Hangul.assemble($screen.val()));
+                                //$screen.val(_composeHangul($screen.val()));
+                                var test = GibberishAES.aesEncrypt(Hangul.assemble($screen.val()), options._key);
+                                console.log('encode value = '+ test);
+                                test = GibberishAES.aesDecrypt(test, options._key);
+                                console.log('decode value = ' + test);
                             });
                             break;
 
@@ -220,7 +225,8 @@
 
                                 // Add the character
                                 $screen.val($screen.val() + character);
-                                $screen.val(Hangul.assemble($screen.val()));
+                                $screen.val(Hangul.a($screen.val()));
+                                //console.log(AES_Encode(Hangul.assemble($screen.val())));
                             });
                             break;
 
@@ -617,8 +623,8 @@
             result = result.join('');
             return result;
         }
-
-        function _makeHangul(index){ // complete_index + 1부터 index까지를 greedy하게 한글로 만든다.
+/*
+        function _makeHangul(index) { // complete_index + 1부터 index까지를 greedy하게 한글로 만든다.
             var code,
                 cho,
                 jung1,
@@ -689,7 +695,7 @@
                 }
             }
         }
-
+*/
         var result = [],
             length = input.length,
             code,
@@ -722,7 +728,7 @@
                     stage = 2;
                 } else {                            // 합성자음 여부 판단
                     if (_isComposeConsonant(previous_code, code)) {
-                                                    // 합성자음이라고 해도 다음에 자음이 나오면 분리되어야 하므로 판단 필요
+                        // 합성자음이라고 해도 다음에 자음이 나오면 분리되어야 하므로 판단 필요
                         stage = 5;
                     } else {                        // 합성이 불가능한 자음이 온 경우에는 입력 전 까지의 문자를 합성하고 여전히 중성이 올 차례
                         _makeHangul(i - 1);
@@ -747,13 +753,14 @@
 
             else if (stage === 3) {               // 종성이 하나 온 상태.
                 if (_isCho(code) >= 0) {            // 또 자음이면 합칠수 있는지 본다. 키보드 입력으론 초성밖에 받을 수 없다
-                    if (_isComposeConsonant(previous_code, code)) {} //합칠 수 있으면 계속 진행. 왜냐하면 이번에 온 자음이 다음 글자의 초성이 될 수도 있기 때문}
+                    if (_isComposeConsonant(previous_code, code)) {
+                    } //합칠 수 있으면 계속 진행. 왜냐하면 이번에 온 자음이 다음 글자의 초성이 될 수도 있기 때문}
                     else {                        // 없으면 한글자 완성
                         _makeHangul(i - 1);
                         stage = 1;                  // 이 종성이 초성이 되고 중성부터 시작
                     }
                 }
-                else if (_isJung(code)>=0) {      // 모음이면 이전 종성은 이 중성과 합쳐지고 앞 글자는 받침이 없다.
+                else if (_isJung(code) >= 0) {      // 모음이면 이전 종성은 이 중성과 합쳐지고 앞 글자는 받침이 없다.
                     _makeHangul(i - 2);
                     stage = 2;
                 }
@@ -788,77 +795,77 @@
         return result.join('');
     };
 
-        /*
-         input = _disassemble(input);
-         // 합성모음의 경우에는 그냥 합쳐도 무방
-         for (var i = 0; i < inputLength; i += 1) {
-         current = input[i];     // 현재 문자
-         previous = input[i - 1];
-         previous2 = input[i - 2];
+    /*
+     input = _disassemble(input);
+     // 합성모음의 경우에는 그냥 합쳐도 무방
+     for (var i = 0; i < inputLength; i += 1) {
+     current = input[i];     // 현재 문자
+     previous = input[i - 1];
+     previous2 = input[i - 2];
 
-         if (_isJung(current) >= 0) {
-         if (_isComposeVowel(previous, current)) {   // 합성모음
-         temp.push(_isComposeVowel(previous, current));
-         }
-         }
-         if (_isCho(current) >= 0) {
-         if (_isJung(previous2) >= 0) {                  // 두개 전이 모음 '읅'
-         if (_isComposeConsonant(previous, current)) { //합성자음인 경우
-         temp.push(_isComposeConsonant(previous, current));
-         }
-         }
-         else {
+     if (_isJung(current) >= 0) {
+     if (_isComposeVowel(previous, current)) {   // 합성모음
+     temp.push(_isComposeVowel(previous, current));
+     }
+     }
+     if (_isCho(current) >= 0) {
+     if (_isJung(previous2) >= 0) {                  // 두개 전이 모음 '읅'
+     if (_isComposeConsonant(previous, current)) { //합성자음인 경우
+     temp.push(_isComposeConsonant(previous, current));
+     }
+     }
+     else {
 
-         }
-         }
-         }
+     }
+     }
+     }
 
-         return temp.join('');
-         */
-        /*
-         for (var i = 0; i < inputLength; i += 1) {
+     return temp.join('');
+     */
+    /*
+     for (var i = 0; i < inputLength; i += 1) {
 
-         current = input[i];     // 현재 문자
-         previous = input[i - 1];
-         previous2 = input[i - 2];
-         if (_isCho(current) < 0 && _isJung(current) < 0 && _isJong(current) < 0) {  // 한글 문자가 아닌 경우
-         result.push(current);
-         }
+     current = input[i];     // 현재 문자
+     previous = input[i - 1];
+     previous2 = input[i - 2];
+     if (_isCho(current) < 0 && _isJung(current) < 0 && _isJong(current) < 0) {  // 한글 문자가 아닌 경우
+     result.push(current);
+     }
 
-         if (_isCho(current) >= 0) { // 현재 문자가 초성이 들어옴 ㄱ
-         if (previous) {           // 처음 문자가 아닌 경우에
+     if (_isCho(current) >= 0) { // 현재 문자가 초성이 들어옴 ㄱ
+     if (previous) {           // 처음 문자가 아닌 경우에
 
-         // 이전 문자가 중성이니 현재 초성은 새 문자의 초성이 되든 기존 문자의 종성이 되든
-         if (_isJung(previous) >= 0) {
-         if (previous2) {
-         if
-         }
-         }
-         _isComposeConsonant(previous, current) ? result.push(_isComposeConsonant(previous, current)) : result.push(previous, current);
-         }
-         else {                  // 이전 문자가 없는 경우에는
-         cho = current;      // 초성이다
-         }
+     // 이전 문자가 중성이니 현재 초성은 새 문자의 초성이 되든 기존 문자의 종성이 되든
+     if (_isJung(previous) >= 0) {
+     if (previous2) {
+     if
+     }
+     }
+     _isComposeConsonant(previous, current) ? result.push(_isComposeConsonant(previous, current)) : result.push(previous, current);
+     }
+     else {                  // 이전 문자가 없는 경우에는
+     cho = current;      // 초성이다
+     }
 
-         }
+     }
 
-         else if (_isJung(current) >= 0) {   // 현재 문자가 중성
-         if (previous) {
-         if (_isJung(previous) >= 0) {   // 이전 문자도 중성
-         if(previous2){
+     else if (_isJung(current) >= 0) {   // 현재 문자가 중성
+     if (previous) {
+     if (_isJung(previous) >= 0) {   // 이전 문자도 중성
+     if(previous2){
 
-         }
-         result.push(previous);
-         result.push(current);
-         }
-         }
-         }
+     }
+     result.push(previous);
+     result.push(current);
+     }
+     }
+     }
 
-         }
+     }
 
-         result = result.join('');
-         return result;
-         */
+     result = result.join('');
+     return result;
+     */
     /*
      for(var i=0; i<inputLength;i+=1){
      current = input[i];
