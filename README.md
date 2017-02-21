@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/ChoiJY/2016-2017_m2soft.svg?branch=master)](https://travis-ci.org/ChoiJY/2016-2017_m2soft)
 
 # 자바스크립트 가상 보안 키보드
 
