@@ -1,0 +1,30 @@
+{
+  "name": "virtualKeyboard-js",
+  "version": "0.0.1",
+  "description": "secure virtual keypad written by js, jquery",
+  "main": "jquery.securekeyboard.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ChoiJY/2016-2017-m2soft-intership.git"
+  },
+  "keywords": [
+    "virtualkeyboard",
+    "korean",
+    "ime",
+    "keyboard",
+    "hangul"
+  ],
+  "author": "Jun Young Choi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ChoiJY/2016-2017-m2soft-intership/issues"
+  },
+  "homepage": "https://github.com/ChoiJY/2016-2017-m2soft-intership#readme",
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-contrib-qunit": "^1.3.0",
+  },
+  "scripts": {
+    "test": "grunt travis"
+  }
+}
