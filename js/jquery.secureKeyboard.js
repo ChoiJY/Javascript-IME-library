@@ -13,8 +13,8 @@
         //  To protect default option data from abusing
         _defaults: function () {
 
-            var _isRandom = false,
-                _key = "abcdefghijklmnopqrstuvwxyz123456",
+            var _secure = false,
+                _secureKey = "abcdefghijklmnopqrstuvwxyz123456",    // 32bit secure key
                 _numpads = [
                     [['1'], ['2'], ['3'], ['\u232B']],
                     [['4'], ['5'], ['6'], ['ENTER']],
@@ -41,7 +41,7 @@
                     [['SPACE'], ['\uD83C\uDF10']]
                 ],
                 options = {
-                    _isRandom: _isRandom,
+                    _secure: _secure,
                     _numpads: _numpads,
                     _alphabets: _simpleQwerty,
                     _qwerty: _qwerty,
@@ -73,14 +73,28 @@
                 $body.append('<div class="keyboard"></div>');
                 var generatedHTML;
                 var $keyboard = $('.keyboard');             //  caching multiple use function
+                var prevEvent = null;
+
+                $body.on('touchstart', function (event) {
+                    if(event.timeStamp-prevEvent < 200){
+                        event.preventDefault();
+                    }
+                    prevEvent = event.timeStamp;
+                });
 
                 $body.on('click', function (event) {
+
+                    if(prevEvent+1000 < event.timeStamp){
+                        event.preventDefault();
+                    }
+                    prevEvent = event.timeStamp;
+
                     //console.log(event.target.parentNode)
                     switch (event.target.className) {
                         case 'nameField':
 
                             $('.nameField').blur();     // mobile keypad not exist
-                            if (options._isRandom) {
+                            if (options._secure) {
                                 generatedHTML = _writeHTML('letter', _randomLayout('letter', options._alphabets));
                             }
 
@@ -97,7 +111,7 @@
                                 // 폼 아래에 충분한 공간이 없을 경우에는 키보드 만큼 스크롤을 내리고, 하단에 키보드를 생성시킨다.
                                 else {
                                     $keyboard.append(generatedHTML);
-                                    document.body.scrollTop = $keyboard.height();
+                                    document.body.scrollTop += $keyboard.height();
                                     $keyboard.css('top', window.innerHeight - $keyboard.height());
                                 }
                             }
@@ -161,7 +175,7 @@
                         case 'hangulField':
 
                             $('.hangulField').blur();     // mobile keypad not exist
-                            if (options._isRandom) {
+                            if (options._secure) {
                                 generatedHTML = _writeHTML('symbol', _randomLayout('symbol', options._hangul));
                             }
                             else {
@@ -234,7 +248,7 @@
 
                             $('.pwdField').blur();     // mobile keypad not exist
 
-                            if (options._isRandom) {
+                            if (options._secure) {
                                 generatedHTML = _writeHTML('number', _randomLayout('number', options._numpads));
                             }
                             else {
@@ -286,7 +300,7 @@
                                 }
 
                                 if ($this.hasClass('close')) {
-                                    $keyboard.empty();
+                                    $keyboard.html('');
                                     return '';
                                 }
 
@@ -297,7 +311,7 @@
                     }
                 });
             }
-            return 'keyboard initialized [ shuffle : ' + options._isRandom + ' ]';
+            return 'keyboard initialized [ shuffle : ' + options._secure + ' ]';
         },
 
         //
