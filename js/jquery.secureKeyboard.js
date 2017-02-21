@@ -84,10 +84,10 @@
 
                 $body.on('click', function (event) {
 
-                    if(prevEvent+1000 < event.timeStamp){
-                        event.preventDefault();
-                    }
-                    prevEvent = event.timeStamp;
+
+                    $('.hangulField').blur();
+                    $('.pwdField').blur();
+                    $('.nameField').blur();
 
                     //console.log(event.target.parentNode)
                     switch (event.target.className) {
