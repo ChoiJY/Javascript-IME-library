@@ -29,7 +29,7 @@
           $(...).SVkeyboard.init(userOptions)
           $.SVkeyboard.init(userOptions)
    
-   userOptions를 {_isRandom:true}로 초기화 할 경우에 키보드의 배열이 랜덤하게 바뀌어 출력된다.
+   userOptions를 {_secure:true}로 초기화 할 경우에 키보드의 배열이 랜덤하게 바뀌어 출력된다.
    
    <br>
    
