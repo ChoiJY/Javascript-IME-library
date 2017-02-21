@@ -21,12 +21,6 @@
                     [['7'], ['8'], ['9'], ['RESET']],
                     [[''], ['0'], [''], ['CLOSE']]
                 ],
-                _alphabets = [
-                    [['q'], ['w'], ['e'], ['r'], ['t'], ['y'], ['u'], ['i'], ['o'], ['p'], [''], ['\u232B']],
-                    [[''], ['a'], ['s'], ['d'], ['f'], ['g'], ['h'], ['j'], ['k'], ['l'], [''], ['ENTER']],
-                    [[''], [''], ['z'], ['x'], ['c'], ['v'], ['b'], ['n'], ['m'], [''], [''], ['SHIFT']],
-                    [['SPACE'], ['\uD83C\uDF10']]
-                ],
                 _qwerty = [
                     [['`', '~'], ['1', '!'], ['2', '@'], ['3', '#'], ['4', '$'], ['5', '%'], ['6', '^'], ['7', '&'], ['8', '*'], ['9', '('], ['0', ')'], ['-', '_'], ['=', '+'], [''], ['\u232B']],
                     [['q', 'Q', 'ㅂ', 'ㅃ'], ['w', 'W', 'ㅈ', 'ㅉ'], ['e', 'E', 'ㄷ', 'ㄸ'], ['r', 'R', 'ㄱ', 'ㄲ'], ['t', 'T', 'ㅅ', 'ㅆ'], ['y', 'Y', 'ㅛ'], ['u', 'U', 'ㅕ'], ['i', 'I', 'ㅑ'], ['o', 'O', 'ㅐ', 'ㅒ'], ['p', 'P', 'ㅔ', 'ㅖ'], ['[', '{'], [']', '}'], ['\\', '|'], [''], ['TAB']],
@@ -41,11 +35,11 @@
                     [['SPACE'], ['\uD83C\uDF10']]
                 ],
                 options = {
-                    _secure: _secure,
+                    secure: _secure,
                     _numpads: _numpads,
-                    _alphabets: _simpleQwerty,
+                    _simpleQwerty: _simpleQwerty,
                     _qwerty: _qwerty,
-                    _hangul: _qwerty
+                    _secureKey:_secureKey
                 };
 
             return options;
@@ -74,9 +68,10 @@
                 var generatedHTML;
                 var $keyboard = $('.keyboard');             //  caching multiple use function
                 var prevEvent = null;
+                var encrypted;
 
                 $body.on('touchstart', function (event) {
-                    if(event.timeStamp-prevEvent < 200){
+                    if (event.timeStamp - prevEvent < 200) {
                         event.preventDefault();
                     }
                     prevEvent = event.timeStamp;
@@ -84,22 +79,17 @@
 
                 $body.on('click', function (event) {
 
-
-                    $('.hangulField').blur();
-                    $('.pwdField').blur();
-                    $('.nameField').blur();
-
                     //console.log(event.target.parentNode)
                     switch (event.target.className) {
                         case 'nameField':
 
                             $('.nameField').blur();     // mobile keypad not exist
-                            if (options._secure) {
-                                generatedHTML = _writeHTML('letter', _randomLayout('letter', options._alphabets));
+                            if (options.secure) {
+                                generatedHTML = _writeHTML('letter', _randomLayout('letter', options._simpleQwerty));
                             }
 
                             else {
-                                generatedHTML = _writeHTML('letter', options._alphabets);
+                                generatedHTML = _writeHTML('letter', options._simpleQwerty);
                             }
 
                             if (($keyboard.children().length) === 0) {
@@ -161,32 +151,29 @@
 
                                 // Add the character
                                 $screen.val($screen.val() + character);
-                                //$('.nameField').val(_composeHangul($('.nameField').val()));
-                                //$screen.val(Hangul.a($screen.val()));
                                 $screen.val(Hangul.assemble($screen.val()));
-                                //$screen.val(_composeHangul($screen.val()));
-                                var test = GibberishAES.aesEncrypt(Hangul.assemble($screen.val()), options._key);
-                                console.log('encode value = '+ test);
-                                test = GibberishAES.aesDecrypt(test, options._key);
-                                console.log('decode value = ' + test);
+                                encrypted = GibberishAES.aesEncrypt(Hangul.assemble($screen.val()), options._secureKey);
+                                $('.tv').val('encode value = ' + encrypted);
+                                encrypted = GibberishAES.aesDecrypt(encrypted, options._secureKey);
+                                $('.tv2').val('decode value = ' + encrypted);
                             });
                             break;
 
                         case 'hangulField':
 
                             $('.hangulField').blur();     // mobile keypad not exist
-                            if (options._secure) {
-                                generatedHTML = _writeHTML('symbol', _randomLayout('symbol', options._hangul));
+                            if (options.secure) {
+                                generatedHTML = _writeHTML('symbol', _randomLayout('symbol', options._qwerty));
                             }
                             else {
-                                generatedHTML = _writeHTML('symbol', options._hangul);
+                                generatedHTML = _writeHTML('symbol', options._qwerty);
                             }
 
                             // 기존에 키보드가 없는 경우
                             if (($keyboard.children().length) === 0) {
                                 // 폼 아래에 충분한 공간이 있을 경우에는 그냥 하단에 키보드를 생성
 
-                                if ((window.innerHeight - event.clientY) > 400) {
+                                if ((window.innerHeight - event.clientY) > 300) {
                                     $keyboard.append(generatedHTML);
                                     $keyboard.css('top', window.innerHeight - $keyboard.height());
                                 }
@@ -240,7 +227,10 @@
                                 // Add the character
                                 $screen.val($screen.val() + character);
                                 $screen.val(Hangul.a($screen.val()));
-                                //console.log(AES_Encode(Hangul.assemble($screen.val())));
+                                encrypted = GibberishAES.aesEncrypt(Hangul.assemble($screen.val()), options._secureKey);
+                                $('.tv').val('encode value = ' + encrypted);
+                                encrypted = GibberishAES.aesDecrypt(encrypted, options._secureKey);
+                                $('.tv2').val('decode value = ' + encrypted);
                             });
                             break;
 
@@ -248,7 +238,7 @@
 
                             $('.pwdField').blur();     // mobile keypad not exist
 
-                            if (options._secure) {
+                            if (options.secure) {
                                 generatedHTML = _writeHTML('number', _randomLayout('number', options._numpads));
                             }
                             else {
@@ -306,12 +296,16 @@
 
                                 // Add the character
                                 $screen.val($screen.val() + character);
+                                encrypted = GibberishAES.aesEncrypt(Hangul.assemble($screen.val()), options._secureKey);
+                                $('.tv').val('encode value = ' + encrypted);
+                                encrypted = GibberishAES.aesDecrypt(encrypted, options._secureKey);
+                                $('.tv2').val('decode value = ' + encrypted);
                             });
                             break;
                     }
                 });
             }
-            return 'keyboard initialized [ shuffle : ' + options._secure + ' ]';
+            return 'keyboard initialized [ shuffle : ' + options.secure + ' ]';
         },
 
         //
@@ -637,79 +631,80 @@
             result = result.join('');
             return result;
         }
-/*
-        function _makeHangul(index) { // complete_index + 1부터 index까지를 greedy하게 한글로 만든다.
-            var code,
-                cho,
-                jung1,
-                jung2,
-                jong1 = 0,
-                jong2,
-                hangul = ''
-                ;
-            if (complete_index + 1 > index) {
-                return;
-            }
-            for (var step = 1; ; step++) {
-                if (step === 1) {
-                    cho = array[complete_index + step].charCodeAt(0);
-                    if (_isJung(cho)) { // 첫번째 것이 모음이면 1) ㅏ같은 경우이거나 2) ㅙ같은 경우이다
-                        if (complete_index + step + 1 <= index && _isJung(jung1 = array[complete_index + step + 1].charCodeAt(0))) { //다음것이 있고 모음이면
-                            result.push(String.fromCharCode(_isJungJoinable(cho, jung1)));
-                            complete_index = index;
-                            return;
-                        } else {
-                            result.push(array[complete_index + step]);
-                            complete_index = index;
-                            return;
-                        }
-                    } else if (!_isCho(cho)) {
-                        result.push(array[complete_index + step]);
-                        complete_index = index;
-                        return;
-                    }
-                    hangul = array[complete_index + step];
-                } else if (step === 2) {
-                    jung1 = array[complete_index + step].charCodeAt(0);
-                    if (_isCho(jung1)) { //두번째 또 자음이 오면 ㄳ 에서 ㅅ같은 경우이다
-                        cho = _isJongJoinable(cho, jung1);
-                        hangul = String.fromCharCode(cho);
-                        result.push(hangul);
-                        complete_index = index;
-                        return;
-                    } else {
-                        hangul = String.fromCharCode((CHO_HASH[cho] * 21 + JUNG_HASH[jung1]) * 28 + HANGUL_OFFSET);
-                    }
-                } else if (step === 3) {
-                    jung2 = array[complete_index + step].charCodeAt(0);
-                    if (_isJungJoinable(jung1, jung2)) {
-                        jung1 = _isJungJoinable(jung1, jung2);
-                    } else {
-                        jong1 = jung2;
-                    }
-                    hangul = String.fromCharCode((CHO_HASH[cho] * 21 + JUNG_HASH[jung1]) * 28 + JONG_HASH[jong1] + HANGUL_OFFSET);
-                } else if (step === 4) {
-                    jong2 = array[complete_index + step].charCodeAt(0);
-                    if (_isJongJoinable(jong1, jong2)) {
-                        jong1 = _isJongJoinable(jong1, jong2);
-                    } else {
-                        jong1 = jong2;
-                    }
-                    hangul = String.fromCharCode((CHO_HASH[cho] * 21 + JUNG_HASH[jung1]) * 28 + JONG_HASH[jong1] + HANGUL_OFFSET);
-                } else if (step === 5) {
-                    jong2 = array[complete_index + step].charCodeAt(0);
-                    jong1 = _isJongJoinable(jong1, jong2);
-                    hangul = String.fromCharCode((CHO_HASH[cho] * 21 + JUNG_HASH[jung1]) * 28 + JONG_HASH[jong1] + HANGUL_OFFSET);
-                }
 
-                if (complete_index + step >= index) {
-                    result.push(hangul);
-                    complete_index = index;
-                    return;
-                }
-            }
-        }
-*/
+        /*
+         function _makeHangul(index) { // complete_index + 1부터 index까지를 greedy하게 한글로 만든다.
+         var code,
+         cho,
+         jung1,
+         jung2,
+         jong1 = 0,
+         jong2,
+         hangul = ''
+         ;
+         if (complete_index + 1 > index) {
+         return;
+         }
+         for (var step = 1; ; step++) {
+         if (step === 1) {
+         cho = array[complete_index + step].charCodeAt(0);
+         if (_isJung(cho)) { // 첫번째 것이 모음이면 1) ㅏ같은 경우이거나 2) ㅙ같은 경우이다
+         if (complete_index + step + 1 <= index && _isJung(jung1 = array[complete_index + step + 1].charCodeAt(0))) { //다음것이 있고 모음이면
+         result.push(String.fromCharCode(_isJungJoinable(cho, jung1)));
+         complete_index = index;
+         return;
+         } else {
+         result.push(array[complete_index + step]);
+         complete_index = index;
+         return;
+         }
+         } else if (!_isCho(cho)) {
+         result.push(array[complete_index + step]);
+         complete_index = index;
+         return;
+         }
+         hangul = array[complete_index + step];
+         } else if (step === 2) {
+         jung1 = array[complete_index + step].charCodeAt(0);
+         if (_isCho(jung1)) { //두번째 또 자음이 오면 ㄳ 에서 ㅅ같은 경우이다
+         cho = _isJongJoinable(cho, jung1);
+         hangul = String.fromCharCode(cho);
+         result.push(hangul);
+         complete_index = index;
+         return;
+         } else {
+         hangul = String.fromCharCode((CHO_HASH[cho] * 21 + JUNG_HASH[jung1]) * 28 + HANGUL_OFFSET);
+         }
+         } else if (step === 3) {
+         jung2 = array[complete_index + step].charCodeAt(0);
+         if (_isJungJoinable(jung1, jung2)) {
+         jung1 = _isJungJoinable(jung1, jung2);
+         } else {
+         jong1 = jung2;
+         }
+         hangul = String.fromCharCode((CHO_HASH[cho] * 21 + JUNG_HASH[jung1]) * 28 + JONG_HASH[jong1] + HANGUL_OFFSET);
+         } else if (step === 4) {
+         jong2 = array[complete_index + step].charCodeAt(0);
+         if (_isJongJoinable(jong1, jong2)) {
+         jong1 = _isJongJoinable(jong1, jong2);
+         } else {
+         jong1 = jong2;
+         }
+         hangul = String.fromCharCode((CHO_HASH[cho] * 21 + JUNG_HASH[jung1]) * 28 + JONG_HASH[jong1] + HANGUL_OFFSET);
+         } else if (step === 5) {
+         jong2 = array[complete_index + step].charCodeAt(0);
+         jong1 = _isJongJoinable(jong1, jong2);
+         hangul = String.fromCharCode((CHO_HASH[cho] * 21 + JUNG_HASH[jung1]) * 28 + JONG_HASH[jong1] + HANGUL_OFFSET);
+         }
+
+         if (complete_index + step >= index) {
+         result.push(hangul);
+         complete_index = index;
+         return;
+         }
+         }
+         }
+         */
         var result = [],
             length = input.length,
             code,
