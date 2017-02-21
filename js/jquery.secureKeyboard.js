@@ -14,7 +14,7 @@
         _defaults: function () {
 
             var _secure = false,
-                _secureKey = "abcdefghijklmnopqrstuvwxyz123456",    // 32bit secure key
+                _secureKey = 'abcdefghijklmnopqrstuvwxyz123456',    // 32bit secure key
                 _numpads = [
                     [['1'], ['2'], ['3'], ['\u232B']],
                     [['4'], ['5'], ['6'], ['ENTER']],
@@ -70,6 +70,7 @@
                 var prevEvent = null;
                 var encrypted;
 
+                // prevent mobile double tap
                 $body.on('touchstart', function (event) {
                     if (event.timeStamp - prevEvent < 200) {
                         event.preventDefault();
@@ -248,7 +249,6 @@
                             // if keyboard is already opened, close present keyboard.
                             if (($keyboard.children().length) === 0) {
                                 // attach keyboard to upper side form
-                                // 남은 공간이 좌항의
                                 if ((window.innerHeight - event.clientY) > 300) {
                                     $keyboard.append(generatedHTML);
                                     $keyboard.css('top', window.innerHeight - $keyboard.height());
@@ -290,6 +290,8 @@
                                 }
 
                                 if ($this.hasClass('close')) {
+                                    $keyboard.css('top', window.innerHeight);
+                                    document.body.scrollTop -= $keyboard.height();
                                     $keyboard.html('');
                                     return '';
                                 }
@@ -803,130 +805,6 @@
         _makeHangul(i - 1);
         return result.join('');
     };
-
-    /*
-     input = _disassemble(input);
-     // 합성모음의 경우에는 그냥 합쳐도 무방
-     for (var i = 0; i < inputLength; i += 1) {
-     current = input[i];     // 현재 문자
-     previous = input[i - 1];
-     previous2 = input[i - 2];
-
-     if (_isJung(current) >= 0) {
-     if (_isComposeVowel(previous, current)) {   // 합성모음
-     temp.push(_isComposeVowel(previous, current));
-     }
-     }
-     if (_isCho(current) >= 0) {
-     if (_isJung(previous2) >= 0) {                  // 두개 전이 모음 '읅'
-     if (_isComposeConsonant(previous, current)) { //합성자음인 경우
-     temp.push(_isComposeConsonant(previous, current));
-     }
-     }
-     else {
-
-     }
-     }
-     }
-
-     return temp.join('');
-     */
-    /*
-     for (var i = 0; i < inputLength; i += 1) {
-
-     current = input[i];     // 현재 문자
-     previous = input[i - 1];
-     previous2 = input[i - 2];
-     if (_isCho(current) < 0 && _isJung(current) < 0 && _isJong(current) < 0) {  // 한글 문자가 아닌 경우
-     result.push(current);
-     }
-
-     if (_isCho(current) >= 0) { // 현재 문자가 초성이 들어옴 ㄱ
-     if (previous) {           // 처음 문자가 아닌 경우에
-
-     // 이전 문자가 중성이니 현재 초성은 새 문자의 초성이 되든 기존 문자의 종성이 되든
-     if (_isJung(previous) >= 0) {
-     if (previous2) {
-     if
-     }
-     }
-     _isComposeConsonant(previous, current) ? result.push(_isComposeConsonant(previous, current)) : result.push(previous, current);
-     }
-     else {                  // 이전 문자가 없는 경우에는
-     cho = current;      // 초성이다
-     }
-
-     }
-
-     else if (_isJung(current) >= 0) {   // 현재 문자가 중성
-     if (previous) {
-     if (_isJung(previous) >= 0) {   // 이전 문자도 중성
-     if(previous2){
-
-     }
-     result.push(previous);
-     result.push(current);
-     }
-     }
-     }
-
-     }
-
-     result = result.join('');
-     return result;
-     */
-    /*
-     for(var i=0; i<inputLength;i+=1){
-     current = input[i];
-     // 한글이 아닌 경우
-     if (_isCho(current) < 0&& _isJung(current) < 0 && _isJong(current) < 0){
-     _make(i-1);
-     _make(i);
-     stage = 0;  // 초성 판단이 가장 먼저
-     continue;
-     }
-     if(stage === 0){    // 현재 커서가 초성인지
-     if(_isCho(current)>=0){ // 초성인 경우
-     stage = 1;  // 중성 판단으로
-     }
-     else if(_isJung(current) >=0){
-     stage =4;   // 중성이 하나 온 경우
-     }
-     }
-     else if(stage === 1){   // 현재 커서가 중성인지
-     if(_isJung(current)>=0){    // 모음이 온 경우
-     stage = 2;  // 종성 판단
-     }
-     else{   // 또 자음인 경우
-     // 합성 가능한 자음인 경우
-     if(_isComposeConsonant(previous, current)){
-     stage =5; // 합성자음인 경우
-     }else {
-     _make(i-1); // 합성 불가능한 경우 전것까지 문자 합성
-     }
-     }
-     }
-     else if(stage === 2){   // 현재 커서가 종성인지
-     if(_isJong(current)>=0){
-     stage=3; // 종성 다음에 자음이든 모음이든 올 수 있음
-     }
-     else if(_isJung(current)>=0){
-     _isComposeVowel(previous, current){
-
-     }
-     }
-     }
-     }
-
-     function combineChar(cho, jung, jong) {
-     var result;
-     result = _charoffset + ($.inArray(cho, _choSung) * 21 * 28) + ($.inArray(jung, _jungSung) * 28) + $.inArray(jong, _jongSung);
-     //console.log(result);
-     result = String.fromCharCode(result);
-     return result;
-     }
-     */
-
 
     //
     //  private methods
