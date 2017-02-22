@@ -1,7 +1,9 @@
+[![Build Status](https://travis-ci.org/ChoiJY/2016-2017_m2soft.svg?branch=master)](https://travis-ci.org/ChoiJY/2016-2017_m2soft)
+[![Built with Grunt](https://cdn.gruntjs.com/builtwith.svg)](http://gruntjs.com/)
 
 # 자바스크립트 가상 보안 키보드
 
-   Virtual keypad implemented by javascript, jquery
+   Virtual keypad implemented by JavaScript, jQuery
 
    <br>
 
@@ -30,11 +32,12 @@
           $(...).SVkeyboard.init(userOptions)
           $.SVkeyboard.init(userOptions)
    
-   userOptions(Object)
-   
-   secure(Boolean) : true시 보안 키보드 기능 활성화 (자판 배열이 임의로 변경됨), 기본 option은 false
-   <br>
-   _secureKey(String) : 32bit의 임의의 string을 이용하여 입력값이 암호화, 복호화
+ userOptions(Object)  
+ 아래의 옵션들을 변경하여 keyboard의 설정을 바꿀 수 있습니다. 변경하지 않거나 없는 옵션을 넣을 시에는 default 옵션으로 초기화됩니다.
+ 
+ > secure(Boolean) : true시 보안 키보드 기능 활성화 (자판 배열이 임의로 변경됨), 기본 option은 false  
+ > _secureKey(String) : 32bit의 임의의 string을 이용하여 입력값이 암호화, 복호화
+ > ex) $.svk.init({secure:true, _secureKey:'abcdefghijklmnopqrstuvwxyz123456'});
    
    <br>
    
