@@ -13,8 +13,8 @@
         //  To protect default option data from abusing
         _defaults: function () {
 
-            var _secure = false,
-                _secureKey = 'abcdefghijklmnopqrstuvwxyz123456',    // 32bit secure key
+            var _defaultSecure = false,
+                _defaultKey = 'abcdefghijklmnopqrstuvwxyz123456',    // 32bit secure key
                 _numpads = [
                     [['1'], ['2'], ['3'], ['\u232B']],
                     [['4'], ['5'], ['6'], ['ENTER']],
@@ -34,15 +34,19 @@
                     [[''], [''], ['z', 'Z', 'ㅋ'], ['x', 'X', 'ㅌ'], ['c', 'C', 'ㅊ'], ['v', 'V', 'ㅍ'], ['b', 'B', 'ㅠ'], ['n', 'N', 'ㅜ'], ['m', 'M', 'ㅡ'], [''], [''], ['SHIFT']],
                     [['SPACE'], ['\uD83C\uDF10']]
                 ],
-                options = {
-                    secure: _secure,
-                    _numpads: _numpads,
-                    _simpleQwerty: _simpleQwerty,
-                    _qwerty: _qwerty,
-                    _secureKey:_secureKey
+                keyboard = {
+                    options: {
+                        secure: _defaultSecure,
+                        secureKey: _defaultKey
+                    },
+                    layouts: {
+                        _qwerty: _qwerty,
+                        _simpleQwerty: _simpleQwerty,
+                        _numpads: _numpads
+                    }
                 };
+            return keyboard;
 
-            return options;
         },
 
         //  public methods
@@ -51,262 +55,272 @@
         //  this method initializes keyboard
         //
         //  @parameter
-        //  randomOption(Object) : if user want to change options (ex. randomized keypad layout)
-        //                         you write parameters that want to change
+        //  userOptions(Object) : if user want to change options (ex. randomized keypad layout)
+        //                        you write parameters that want to change
         //
         //  @return
         //  (String) : current keyboard initialized option
 
-        init: function (randomOption) {
+        init: function (userOptions) {
 
             // user options and default options are merged, by this line.
-            var options = $.extend({}, this._defaults(), randomOption);
-            var $body = $('body');
+            var options = $.extend({}, this._defaults().options, userOptions),
+                layouts = this._defaults().layouts,
+                prevEvent = null,                                               // previous touch event
+                encrypted,                                                      // encrypted user input data
+                generatedHTML,                                                  // html tags composing keyboard layout
+                $body = $('body'),
+                $keyboard;
+
+            // if keyboard is already existed, no more keyboard elements
             if (document.getElementsByClassName('keyboard').length === 0) {
-
                 $body.append('<div class="keyboard"></div>');
-                var generatedHTML;
-                var $keyboard = $('.keyboard');             //  caching multiple use function
-                var prevEvent = null;
-                var encrypted;
-
-                // prevent mobile double tap
-                $body.on('touchstart', function (event) {
-                    if (event.timeStamp - prevEvent < 200) {
-                        event.preventDefault();
-                    }
-                    prevEvent = event.timeStamp;
-                });
-
-                $body.on('click', function (event) {
-
-                    //console.log(event.target.parentNode)
-                    switch (event.target.className) {
-                        case 'nameField':
-
-                            $('.nameField').blur();     // mobile keypad not exist
-                            if (options.secure) {
-                                generatedHTML = _writeHTML('letter', _randomLayout('letter', options._simpleQwerty));
-                            }
-
-                            else {
-                                generatedHTML = _writeHTML('letter', options._simpleQwerty);
-                            }
-
-                            if (($keyboard.children().length) === 0) {
-                                // 폼 아래에 충분한 공간이 있을 경우에는 그냥 하단에 키보드를 생성
-                                if ((window.innerHeight - event.clientY) > 300) {
-                                    $keyboard.append(generatedHTML);
-                                    $keyboard.css('top', window.innerHeight - $keyboard.height());
-                                }
-                                // 폼 아래에 충분한 공간이 없을 경우에는 키보드 만큼 스크롤을 내리고, 하단에 키보드를 생성시킨다.
-                                else {
-                                    $keyboard.append(generatedHTML);
-                                    document.body.scrollTop += $keyboard.height();
-                                    $keyboard.css('top', window.innerHeight - $keyboard.height());
-                                }
-                            }
-
-                            // 기존의 키보드가 있다면 삭제하고 그만큼 스크롤을 올림
-                            else {
-                                $keyboard.css('top', window.innerHeight);
-                                document.body.scrollTop -= $keyboard.height();
-                                $keyboard.html('');
-                            }
-
-                            // Sense keyboard li's contents
-                            $('.letter').on('click', function () {
-
-                                var $this = $(this),
-                                    text = '',
-                                    $screen = $(event.target),
-                                    character = this.innerText;
-
-                                if ($this.hasClass('shift')) {
-                                    $('.letter > span > span').toggleClass('upper');
-                                    return '';
-                                }
-
-                                if ($this.hasClass('local')) {
-                                    $('.letter > span').toggleClass('kr');
-                                    return '';
-                                }
-
-                                if ($this.hasClass('del')) {
-                                    text = $screen.val();
-                                    $screen.val(text.substr(0, text.length - 1));
-                                    return '';
-                                }
-
-                                if ($this.hasClass('space')) {
-                                    character = ' ';
-                                }
-
-                                if ($this.hasClass('enter')) {
-                                    character = '\n';
-                                }
-
-                                if ($this.hasClass('uppercase')) {
-                                    character = character.toUpperCase();
-                                }
-
-                                // Add the character
-                                $screen.val($screen.val() + character);
-                                $screen.val(Hangul.assemble($screen.val()));
-                                encrypted = GibberishAES.aesEncrypt(Hangul.assemble($screen.val()), options._secureKey);
-                                $('.tv').val('encode value = ' + encrypted);
-                                encrypted = GibberishAES.aesDecrypt(encrypted, options._secureKey);
-                                $('.tv2').val('decode value = ' + encrypted);
-                            });
-                            break;
-
-                        case 'hangulField':
-
-                            $('.hangulField').blur();     // mobile keypad not exist
-                            if (options.secure) {
-                                generatedHTML = _writeHTML('symbol', _randomLayout('symbol', options._qwerty));
-                            }
-                            else {
-                                generatedHTML = _writeHTML('symbol', options._qwerty);
-                            }
-
-                            // 기존에 키보드가 없는 경우
-                            if (($keyboard.children().length) === 0) {
-                                // 폼 아래에 충분한 공간이 있을 경우에는 그냥 하단에 키보드를 생성
-
-                                if ((window.innerHeight - event.clientY) > 300) {
-                                    $keyboard.append(generatedHTML);
-                                    $keyboard.css('top', window.innerHeight - $keyboard.height());
-                                }
-                                // 폼 아래에 충분한 공간이 없을 경우에는 키보드 만큼 스크롤을 내리고, 하단에 키보드를 생성시킨다.
-                                else {
-                                    $keyboard.append(generatedHTML);
-                                    document.body.scrollTop = $keyboard.height();
-                                    $keyboard.css('top', window.innerHeight - $keyboard.height());
-                                }
-                            }
-
-                            // 기존 키보드가 있는 경우
-                            else {
-                                $keyboard.css('top', window.innerHeight);
-                                document.body.scrollTop -= $keyboard.height();
-                                $keyboard.html('');
-                            }
-
-                            // Sense keyboard li's contents
-                            $('.symbol').on('click', function () {
-
-                                var $this = $(this),
-                                    $screen = $(event.target),
-                                    text,
-                                    character = this.innerText;
-
-                                if ($this.hasClass('shift')) {
-                                    $('.symbol > span > span').toggleClass('upper');
-                                    return '';
-                                }
-
-                                if ($this.hasClass('local')) {
-                                    $('.k > span').toggleClass('kr');
-                                    return '';
-                                }
-
-                                if ($this.hasClass('del')) {
-                                    text = $screen.val();
-                                    $screen.val(text.substr(0, text.length - 1));
-                                    return '';
-                                }
-
-                                if ($this.hasClass('space')) {
-                                    character = ' ';
-                                }
-
-                                if ($this.hasClass('enter')) {
-                                    character = '\n';
-                                }
-
-                                // Add the character
-                                $screen.val($screen.val() + character);
-                                $screen.val(Hangul.a($screen.val()));
-                                encrypted = GibberishAES.aesEncrypt(Hangul.assemble($screen.val()), options._secureKey);
-                                $('.tv').val('encode value = ' + encrypted);
-                                encrypted = GibberishAES.aesDecrypt(encrypted, options._secureKey);
-                                $('.tv2').val('decode value = ' + encrypted);
-                            });
-                            break;
-
-                        case 'pwdField':
-
-                            $('.pwdField').blur();     // mobile keypad not exist
-
-                            if (options.secure) {
-                                generatedHTML = _writeHTML('number', _randomLayout('number', options._numpads));
-                            }
-                            else {
-                                generatedHTML = _writeHTML('number', options._numpads);
-                            }
-
-                            // if keyboard is already opened, close present keyboard.
-                            if (($keyboard.children().length) === 0) {
-                                // attach keyboard to upper side form
-                                if ((window.innerHeight - event.clientY) > 300) {
-                                    $keyboard.append(generatedHTML);
-                                    $keyboard.css('top', window.innerHeight - $keyboard.height());
-                                }
-                                // attach keyboard to down side form
-                                else {
-                                    $keyboard.append(generatedHTML);
-                                    document.body.scrollTop = $keyboard.height();
-                                    $keyboard.css('top', window.innerHeight - $keyboard.height());
-                                }
-                            }
-                            else {
-                                $keyboard.css('top', window.innerHeight);
-                                document.body.scrollTop -= $keyboard.height();
-                                $keyboard.html('');
-                            }
-
-                            // Sense keyboard li's contents
-                            $('.number').on('click', function () {
-
-                                var $this = $(this),
-                                    text,
-                                    $screen = $(event.target),
-                                    character = this.innerText;
-
-                                if ($this.hasClass('del')) {
-                                    text = $screen.val();
-                                    $screen.val(text.substr(0, text.length - 1));
-                                    return '';
-                                }
-                                if ($this.hasClass('reset')) {
-                                    text = $screen.val();
-                                    $screen.val(text.substr(text.length));
-                                    return '';
-                                }
-
-                                if ($this.hasClass('enter')) {
-                                    character = '\n';
-                                }
-
-                                if ($this.hasClass('close')) {
-                                    $keyboard.css('top', window.innerHeight);
-                                    document.body.scrollTop -= $keyboard.height();
-                                    $keyboard.html('');
-                                    return '';
-                                }
-
-                                // Add the character
-                                $screen.val($screen.val() + character);
-                                encrypted = GibberishAES.aesEncrypt(Hangul.assemble($screen.val()), options._secureKey);
-                                $('.tv').val('encode value = ' + encrypted);
-                                encrypted = GibberishAES.aesDecrypt(encrypted, options._secureKey);
-                                $('.tv2').val('decode value = ' + encrypted);
-                            });
-                            break;
-                    }
-                });
             }
+
+            // caching multiple use function
+            $keyboard = $('.keyboard');
+
+            // prevent mobile double tap
+            $body.off('touchstart').on('touchstart', function (event) {
+
+                // touch start time - previous touch start time < 200ms
+                if (event.timeStamp - prevEvent < 200) {
+                    event.preventDefault();
+                }
+                prevEvent = event.timeStamp;
+
+            });
+
+            $body.off('click').on('click', function (event) {
+
+                switch (event.target.className) {
+
+                    case 'nameField':
+
+                        $('.nameField').blur();     // mobile keypad not exist
+                        if (options.secure) {
+                            generatedHTML = _writeHTML('letter', _randomLayout('letter', layouts._simpleQwerty));
+                        }
+
+                        else {
+                            generatedHTML = _writeHTML('letter', layouts._simpleQwerty);
+                        }
+
+                        if (($keyboard.children().length) === 0) {
+
+                            // if sufficient space exists under input form, keyboard created under input form
+                            if ((window.innerHeight - event.clientY) > 300) {
+                                $keyboard.append(generatedHTML);
+                                $keyboard.css('top', window.innerHeight - $keyboard.height());
+                            }
+                            // if spaces is not sufficient, scrolled as keyboard size and created under input form
+                            else {
+                                $keyboard.append(generatedHTML);
+                                document.body.scrollTop += $keyboard.height();
+                                $keyboard.css('top', window.innerHeight - $keyboard.height());
+                            }
+                        }
+
+                        // if keyboard already exists, scrolled up as keyboard size and deleted keyboard
+                        else {
+                            $keyboard.css('top', window.innerHeight);
+                            document.body.scrollTop -= $keyboard.height();
+                            $keyboard.html('');
+                        }
+
+                        // Sense keyboard li's contents
+                        $('.letter').off('click').on('click', function () {
+
+                            var $this = $(this),
+                                currentText = '',
+                                $form = $(event.target),                      // event.target is clicked input
+                                character = this.innerText;
+
+                            if ($this.hasClass('shift')) {
+                                $('.letter > span > span').toggleClass('upper');
+                                return '';
+                            }
+
+                            if ($this.hasClass('local')) {
+                                $('.letter > span').toggleClass('kr');
+                                return '';
+                            }
+
+                            if ($this.hasClass('del')) {
+                                currentText = $form.val();
+                                $form.val(currentText.substr(0, currentText.length - 1));
+                                return '';
+                            }
+
+                            if ($this.hasClass('space')) {
+                                character = ' ';
+                            }
+
+                            if ($this.hasClass('enter')) {
+                                character = '\n';
+                            }
+
+                            if ($this.hasClass('uppercase')) {
+                                character = character.toUpperCase();
+                            }
+
+                            // Add the character
+                            $form.val($form.val() + character);
+                            $form.val(Hangul.assemble($form.val()));
+                            encrypted = GibberishAES.aesEncrypt(Hangul.assemble($form.val()), options.secureKey);
+                            $('.tv').val('encode value = ' + encrypted);
+                            encrypted = GibberishAES.aesDecrypt(encrypted, options.secureKey);
+                            $('.tv2').val('decode value = ' + encrypted);
+                        });
+                        break;
+
+                    case 'hangulField':
+
+                        $('.hangulField').blur();     // mobile keypad not exist
+                        if (options.secure) {
+                            generatedHTML = _writeHTML('symbol', _randomLayout('symbol', layouts._qwerty));
+                        }
+                        else {
+                            generatedHTML = _writeHTML('symbol', layouts._qwerty);
+                        }
+
+                        // 기존에 키보드가 없는 경우
+                        if (($keyboard.children().length) === 0) {
+                            // 폼 아래에 충분한 공간이 있을 경우에는 그냥 하단에 키보드를 생성
+
+                            if ((window.innerHeight - event.clientY) > 300) {
+                                $keyboard.append(generatedHTML);
+                                $keyboard.css('top', window.innerHeight - $keyboard.height());
+                            }
+                            // 폼 아래에 충분한 공간이 없을 경우에는 키보드 만큼 스크롤을 내리고, 하단에 키보드를 생성시킨다.
+                            else {
+                                $keyboard.append(generatedHTML);
+                                document.body.scrollTop = $keyboard.height();
+                                $keyboard.css('top', window.innerHeight - $keyboard.height());
+                            }
+                        }
+
+                        // 기존 키보드가 있는 경우
+                        else {
+                            $keyboard.css('top', window.innerHeight);
+                            document.body.scrollTop -= $keyboard.height();
+                            $keyboard.html('');
+                        }
+
+                        // Sense keyboard li's contents
+                        $('.symbol').on('click', function () {
+
+                            var $this = $(this),
+                                $form = $(event.target),
+                                currentText,
+                                character = this.innerText;
+
+                            if ($this.hasClass('shift')) {
+                                $('.symbol > span > span').toggleClass('upper');
+                                return '';
+                            }
+
+                            if ($this.hasClass('local')) {
+                                $('.k > span').toggleClass('kr');
+                                return '';
+                            }
+
+                            if ($this.hasClass('del')) {
+                                currentText = $form.val();
+                                $form.val(currentText.substr(0, currentText.length - 1));
+                                return '';
+                            }
+
+                            if ($this.hasClass('space')) {
+                                character = ' ';
+                            }
+
+                            if ($this.hasClass('enter')) {
+                                character = '\n';
+                            }
+
+                            // Add the character
+                            $form.val($form.val() + character);
+                            $form.val(Hangul.a($form.val()));
+                            encrypted = GibberishAES.aesEncrypt(Hangul.assemble($form.val()), options.secureKey);
+                            $('.tv').val('encode value = ' + encrypted);
+                            encrypted = GibberishAES.aesDecrypt(encrypted, options.secureKey);
+                            $('.tv2').val('decode value = ' + encrypted);
+                        });
+                        break;
+
+                    case 'pwdField':
+
+                        $('.pwdField').blur();     // mobile keypad not exist
+
+                        if (options.secure) {
+                            generatedHTML = _writeHTML('number', _randomLayout('number', layouts._numpads));
+                        }
+                        else {
+                            generatedHTML = _writeHTML('number', layouts._numpads);
+                        }
+
+                        // if keyboard is already opened, close present keyboard.
+                        if (($keyboard.children().length) === 0) {
+                            // attach keyboard to upper side form
+                            if ((window.innerHeight - event.clientY) > 300) {
+                                $keyboard.append(generatedHTML);
+                                $keyboard.css('top', window.innerHeight - $keyboard.height());
+                            }
+                            // attach keyboard to down side form
+                            else {
+                                $keyboard.append(generatedHTML);
+                                document.body.scrollTop = $keyboard.height();
+                                $keyboard.css('top', window.innerHeight - $keyboard.height());
+                            }
+                        }
+                        else {
+                            $keyboard.css('top', window.innerHeight);
+                            document.body.scrollTop -= $keyboard.height();
+                            $keyboard.html('');
+                        }
+
+                        // Sense keyboard li's contents
+                        $('.number').on('click', function () {
+
+                            var $this = $(this),
+                                currentText,
+                                $form = $(event.target),
+                                character = this.innerText;
+
+                            if ($this.hasClass('del')) {
+                                currentText = $form.val();
+                                $form.val(currentText.substr(0, currentText.length - 1));
+                                return '';
+                            }
+                            if ($this.hasClass('reset')) {
+                                currentText = $form.val();
+                                $form.val(currentText.substr(currentText.length));
+                                return '';
+                            }
+
+                            if ($this.hasClass('enter')) {
+                                character = '\n';
+                            }
+
+                            if ($this.hasClass('close')) {
+                                $keyboard.css('top', window.innerHeight);
+                                document.body.scrollTop -= $keyboard.height();
+                                $keyboard.html('');
+                                return '';
+                            }
+
+                            // Add the character
+                            $form.val($form.val() + character);
+                            encrypted = GibberishAES.aesEncrypt(Hangul.assemble($form.val()), options.secureKey);
+                            $('.tv').val('encode value = ' + encrypted);
+                            encrypted = GibberishAES.aesDecrypt(encrypted, options.secureKey);
+                            $('.tv2').val('decode value = ' + encrypted);
+                        });
+                        break;
+                }
+            });
+
             return 'keyboard initialized [ shuffle : ' + options.secure + ' ]';
         },
 
@@ -320,490 +334,6 @@
         detach: function () {
             $('.keyboard').remove();
         }
-    };
-
-    // 한글 자,모 합성
-    // @param
-    // input(String) -> user's input inserted by virtual keyboard
-    // @return
-    // result(String) ->
-
-    var _composeHangul = function (input) {
-
-        var offset = 0xAC00;
-
-        var choSung = [
-                'ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ',
-                'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ',
-                'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ',
-                'ㅍ', 'ㅎ'
-            ],
-            jungSung = [
-                'ㅏ', 'ㅐ', 'ㅑ', 'ㅒ', 'ㅓ', 'ㅔ',
-                'ㅕ', 'ㅖ', 'ㅗ', 'ㅘ', 'ㅙ', 'ㅚ',
-                'ㅛ', 'ㅜ', 'ㅝ', 'ㅞ', 'ㅟ', 'ㅠ',
-                'ㅡ', 'ㅢ', 'ㅣ'
-            ],
-            jongSung = [
-                '', 'ㄱ', 'ㄲ', 'ㄳ', 'ㄴ', 'ㄵ', 'ㄶ',
-                'ㄷ', 'ㄹ', 'ㄺ', 'ㄻ', 'ㄼ', 'ㄽ', 'ㄾ',
-                'ㄿ', 'ㅀ', 'ㅁ', 'ㅂ', 'ㅄ', 'ㅅ', 'ㅆ',
-                'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'
-            ],
-            consonants = [
-                'ㄱ', 'ㄲ', 'ㄳ', 'ㄴ', 'ㄵ', 'ㄶ', 'ㄷ', 'ㄸ',
-                'ㄹ', 'ㄺ', 'ㄻ', 'ㄼ', 'ㄽ', 'ㄾ', 'ㄿ', 'ㅀ',
-                'ㅁ', 'ㅂ', 'ㅃ', 'ㅄ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ',
-                'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'
-            ],
-            _composedVowel = {
-                ㅗㅏ: 'ㅘ',
-                ㅗㅐ: 'ㅙ',
-                ㅗㅣ: 'ㅚ',
-                ㅜㅝ: 'ㅝ',
-                ㅜㅔ: 'ㅞ',
-                ㅜㅣ: 'ㅟ',
-                ㅡㅣ: 'ㅢ'
-            },
-            _composedConsonant = {
-                ㄱㅅ: 'ㄳ',
-                ㄴㅈ: 'ㄵ',
-                ㄴㅎ: 'ㄶ',
-                ㄹㄱ: 'ㄺ',
-                ㄹㅁ: 'ㄻ',
-                ㄹㅂ: 'ㄼ',
-                ㄹㅅ: 'ㄽ',
-                ㄹㅌ: 'ㄾ',
-                ㄹㅍ: 'ㄿ',
-                ㄹㅎ: 'ㅀ',
-                ㅂㅅ: 'ㅄ',
-                ㅅㅅ: 'ㅆ'
-            };
-
-        function _completeHangul(unicode) {             // 가 ~ 힣
-            return 0xAC00 <= unicode && unicode <= 0xd7a3;
-        }
-
-        function _isConsonant(inputChar) {
-            var num = $.inArray(inputChar, consonants);
-            if (num >= 0) {
-                return num;
-            }
-            else {
-                return -1;
-            }
-        }
-
-        function _isCho(inputChar) {
-            var num = $.inArray(inputChar, choSung);
-            if (num >= 0) {
-                return num;
-            }
-            else {
-                return -1;
-            }
-        }
-
-        function _isJung(inputChar) {
-            var num = $.inArray(inputChar, jungSung);
-            if (num >= 0) {
-                return num;
-            }
-            else {
-                return -1;
-            }
-        }
-
-        function _isJong(inputChar) {
-            var num = $.inArray(inputChar, jongSung);
-            if (num >= 0) {
-                return num;
-            }
-            else {
-                return -1;
-            }
-        }
-
-        function _isComposeVowel(first, second) {
-            return _composedVowel[first + second] ? _composedVowel[first + second] : false;
-        }
-
-        function _isComposeConsonant(first, second) {
-            return _composedConsonant[first + second] ? _composedConsonant[first + second] : false;
-        }
-
-        function _disassemble(input) {
-
-            var result = [],
-                temp,
-                cho,
-                jung,
-                jong;
-
-            // input string 길이만큼 loop
-            for (var i = 0; i < input.length; i += 1) {
-
-                temp = input[i].charCodeAt(0);
-                // 완전한 한글 문자인 경우
-                if (_completeHangul(temp)) {
-                    temp -= offset;   // 인덱스의 문자 -'가'
-                    jong = temp % 28;                         // 종성의 인덱스
-                    jung = (temp - jong) / 28 % 21;           // 중성의 인덱스
-                    cho = Math.floor((temp - jong) / 28 / 21);              // 초성의 인덱스
-                    result.push(choSung[cho]);                // 해당 초성 배열을 넣음
-                    switch (jungSung[jung]) {                  // 이중모음 / 단모음
-                        case 'ㅘ':
-                            result.push('ㅗ');
-                            result.push('ㅏ');
-                            break;
-                        case 'ㅙ':
-                            result.push('ㅗ');
-                            result.push('ㅐ');
-                            break;
-                        case 'ㅚ':
-                            result.push('ㅗ');
-                            result.push('l');
-                            break;
-                        case 'ㅝ':
-                            result.push('ㅜ');
-                            result.push('ㅓ');
-                            break;
-                        case 'ㅞ':
-                            result.push('ㅜ');
-                            result.push('ㅔ');
-                            break;
-                        case 'ㅟ':
-                            result.push('ㅜ');
-                            result.push('ㅣ');
-                            break;
-                        case 'ㅢ':
-                            result.push('ㅡ');
-                            result.push('ㅣ');
-                            break;
-                        default:
-                            result.push(jungSung[jung]);
-                    }
-
-                    if (jong > 0) {                               // 종성이 있는 경우
-
-                        switch (jongSung[jong]) {
-                            case 'ㄳ':
-                                result.push('ㄱ');
-                                result.push('ㅅ');
-                                break;
-                            case 'ㄵ':
-                                result.push('ㄴ');
-                                result.push('ㅈ');
-                                break;
-                            case 'ㄶ':
-                                result.push('ㄴ');
-                                result.push('ㅎ');
-                                break;
-                            case 'ㄺ':
-                                result.push('ㄹ');
-                                result.push('ㄱ');
-                                break;
-                            case 'ㄻ':
-                                result.push('ㄹ');
-                                result.push('ㅁ');
-                                break;
-                            case 'ㄼ':
-                                result.push('ㄹ');
-                                result.push('ㅂ');
-                                break;
-                            case 'ㄽ':
-                                result.push('ㄹ');
-                                result.push('ㅅ');
-                                break;
-                            case 'ㄾ':
-                                result.push('ㄹ');
-                                result.push('ㅌ');
-                                break;
-                            case 'ㄿ':
-                                result.push('ㄹ');
-                                result.push('ㅍ');
-                                break;
-                            case 'ㅀ':
-                                result.push('ㄹ');
-                                result.push('ㅎ');
-                                break;
-                            case 'ㅄ':
-                                result.push('ㅂ');
-                                result.push('ㅅ');
-                                break;
-                            default:
-                                result.push(jongSung[jong]);
-                        }
-
-                    }
-                }
-                // 해당 인덱스의 내용이 자음만 있을 경우
-                else if (_isConsonant(input[i]) >= 0) {
-                    switch (input[i]) {
-                        case 'ㄳ':
-                            result.push('ㄱ');
-                            result.push('ㅅ');
-                            break;
-                        case 'ㄵ':
-                            result.push('ㄴ');
-                            result.push('ㅈ');
-                            break;
-                        case 'ㄶ':
-                            result.push('ㄴ');
-                            result.push('ㅎ');
-                            break;
-                        case 'ㄺ':
-                            result.push('ㄹ');
-                            result.push('ㄱ');
-                            break;
-                        case 'ㄻ':
-                            result.push('ㄹ');
-                            result.push('ㅁ');
-                            break;
-                        case 'ㄼ':
-                            result.push('ㄹ');
-                            result.push('ㅂ');
-                            break;
-                        case 'ㄽ':
-                            result.push('ㄹ');
-                            result.push('ㅅ');
-                            break;
-                        case 'ㄾ':
-                            result.push('ㄹ');
-                            result.push('ㅌ');
-                            break;
-                        case 'ㄿ':
-                            result.push('ㄹ');
-                            result.push('ㅍ');
-                            break;
-                        case 'ㅀ':
-                            result.push('ㄹ');
-                            result.push('ㅎ');
-                            break;
-                        case 'ㅄ':
-                            result.push('ㅂ');
-                            result.push('ㅅ');
-                            break;
-                        default:
-                            result.push(input[i]);
-
-                    }
-                }
-                // 모음이거나 다른 문자일 경우는 그냥 한 문자 처리한다.
-                else {
-                    if (_isJung(input[i]) >= 0) {
-                        switch (input[i]) {                  // 이중모음 / 단모음
-                            case 'ㅘ':
-                                result.push('ㅗ');
-                                result.push('ㅏ');
-                                break;
-                            case 'ㅙ':
-                                result.push('ㅗ');
-                                result.push('ㅐ');
-                                break;
-                            case 'ㅚ':
-                                result.push('ㅗ');
-                                result.push('l');
-                                break;
-                            case 'ㅝ':
-                                result.push('ㅜ');
-                                result.push('ㅓ');
-                                break;
-                            case 'ㅞ':
-                                result.push('ㅜ');
-                                result.push('ㅔ');
-                                break;
-                            case 'ㅟ':
-                                result.push('ㅜ');
-                                result.push('ㅣ');
-                                break;
-                            case 'ㅢ':
-                                result.push('ㅡ');
-                                result.push('ㅣ');
-                                break;
-                            default:
-                                result.push(input[i]);
-                        }
-                    }
-                    else {
-                        result.push(input[i]);
-                    }
-                }
-            }
-            result = result.join('');
-            return result;
-        }
-
-        /*
-         function _makeHangul(index) { // complete_index + 1부터 index까지를 greedy하게 한글로 만든다.
-         var code,
-         cho,
-         jung1,
-         jung2,
-         jong1 = 0,
-         jong2,
-         hangul = ''
-         ;
-         if (complete_index + 1 > index) {
-         return;
-         }
-         for (var step = 1; ; step++) {
-         if (step === 1) {
-         cho = array[complete_index + step].charCodeAt(0);
-         if (_isJung(cho)) { // 첫번째 것이 모음이면 1) ㅏ같은 경우이거나 2) ㅙ같은 경우이다
-         if (complete_index + step + 1 <= index && _isJung(jung1 = array[complete_index + step + 1].charCodeAt(0))) { //다음것이 있고 모음이면
-         result.push(String.fromCharCode(_isJungJoinable(cho, jung1)));
-         complete_index = index;
-         return;
-         } else {
-         result.push(array[complete_index + step]);
-         complete_index = index;
-         return;
-         }
-         } else if (!_isCho(cho)) {
-         result.push(array[complete_index + step]);
-         complete_index = index;
-         return;
-         }
-         hangul = array[complete_index + step];
-         } else if (step === 2) {
-         jung1 = array[complete_index + step].charCodeAt(0);
-         if (_isCho(jung1)) { //두번째 또 자음이 오면 ㄳ 에서 ㅅ같은 경우이다
-         cho = _isJongJoinable(cho, jung1);
-         hangul = String.fromCharCode(cho);
-         result.push(hangul);
-         complete_index = index;
-         return;
-         } else {
-         hangul = String.fromCharCode((CHO_HASH[cho] * 21 + JUNG_HASH[jung1]) * 28 + HANGUL_OFFSET);
-         }
-         } else if (step === 3) {
-         jung2 = array[complete_index + step].charCodeAt(0);
-         if (_isJungJoinable(jung1, jung2)) {
-         jung1 = _isJungJoinable(jung1, jung2);
-         } else {
-         jong1 = jung2;
-         }
-         hangul = String.fromCharCode((CHO_HASH[cho] * 21 + JUNG_HASH[jung1]) * 28 + JONG_HASH[jong1] + HANGUL_OFFSET);
-         } else if (step === 4) {
-         jong2 = array[complete_index + step].charCodeAt(0);
-         if (_isJongJoinable(jong1, jong2)) {
-         jong1 = _isJongJoinable(jong1, jong2);
-         } else {
-         jong1 = jong2;
-         }
-         hangul = String.fromCharCode((CHO_HASH[cho] * 21 + JUNG_HASH[jung1]) * 28 + JONG_HASH[jong1] + HANGUL_OFFSET);
-         } else if (step === 5) {
-         jong2 = array[complete_index + step].charCodeAt(0);
-         jong1 = _isJongJoinable(jong1, jong2);
-         hangul = String.fromCharCode((CHO_HASH[cho] * 21 + JUNG_HASH[jung1]) * 28 + JONG_HASH[jong1] + HANGUL_OFFSET);
-         }
-
-         if (complete_index + step >= index) {
-         result.push(hangul);
-         complete_index = index;
-         return;
-         }
-         }
-         }
-         */
-        var result = [],
-            length = input.length,
-            code,
-            stage = 0,
-            complete_index = -1, //완성된 곳의 인덱스
-            previous_code;
-
-        for (var i = 0; i < length; i++) {
-
-            code = input[i];
-
-            if (_isCho(code) < 0 && _isJung(code) < 0 && _isJong(code) < 0) {
-                _makeHangul(i - 1);                 // 현재 문자가 한글이 아니기 떄문에 이전 문자까지 한글 자모 합성
-                _makeHangul(i);
-                stage = 0;
-                continue;
-            }
-
-            if (stage === 0) {                      // 현재 문자가 초성인지 아닌 지 판단
-                if (_isCho(code) >= 0) {            // 초성이 오면 아무 문제 없다.
-                    stage = 1;                      // 다음 문자가 중성인지 판단
-                } else if (_isJung(code)) {
-                    // 중성이오면 합성모음 판단하는 케이스로
-                    stage = 4;
-                }
-            }
-
-            else if (stage === 1) {               // 현재 문자가 중성인지 아닌 지 판단
-                if (_isJung(code) >= 0) {           // 중성이 온 경우
-                    stage = 2;
-                } else {                            // 합성자음 여부 판단
-                    if (_isComposeConsonant(previous_code, code)) {
-                        // 합성자음이라고 해도 다음에 자음이 나오면 분리되어야 하므로 판단 필요
-                        stage = 5;
-                    } else {                        // 합성이 불가능한 자음이 온 경우에는 입력 전 까지의 문자를 합성하고 여전히 중성이 올 차례
-                        _makeHangul(i - 1);
-                    }
-                }
-            }
-
-            else if (stage === 2) {               // 현재 문자가 종성인지 아닌 지 판단
-                if (_isJong(code) >= 0) {           // 종성이 왔다면 다음 문자는 자,모음 이 와야함
-                    stage = 3;
-                } else if (_isJung(code) >= 0) {    // 모음이 오면 앞의 모음과 합칠 수 있는지 본다.
-                    if (_isComposeVowel(previous_code, code)) { //합칠 수 있으면 여전히 종성이 올 차례고 그대로 진행
-                    } else {                        // 합칠 수 없다면 오타가 생긴 경우  ex)'라ㅏ'
-                        _makeHangul(i - 1);
-                        stage = 4;                  // 오타의 경우에는 이전 글자까지 합성하고 다시 합성모음 판단하는 케이스로
-                    }
-                } else {                            // 종성이 되지 않는 자음이 온 경우에는 이전까지 완성하고 다시시작 ex) '아ㄸ'
-                    _makeHangul(i - 1);
-                    stage = 1;
-                }
-            }
-
-            else if (stage === 3) {               // 종성이 하나 온 상태.
-                if (_isCho(code) >= 0) {            // 또 자음이면 합칠수 있는지 본다. 키보드 입력으론 초성밖에 받을 수 없다
-                    if (_isComposeConsonant(previous_code, code)) {
-                    } //합칠 수 있으면 계속 진행. 왜냐하면 이번에 온 자음이 다음 글자의 초성이 될 수도 있기 때문}
-                    else {                        // 없으면 한글자 완성
-                        _makeHangul(i - 1);
-                        stage = 1;                  // 이 종성이 초성이 되고 중성부터 시작
-                    }
-                }
-                else if (_isJung(code) >= 0) {      // 모음이면 이전 종성은 이 중성과 합쳐지고 앞 글자는 받침이 없다.
-                    _makeHangul(i - 2);
-                    stage = 2;
-                }
-            }
-
-            else if (stage === 4) { // 중성이 하나 온 상태
-                if (_isJung(code)) { //중성이 온 경우
-                    if (_isComposeVowel(previous_code, code)) { //이전 중성과 합쳐질 수 있는 경우
-                        _makeHangul(i);
-                        stage = 0;
-                    } else { //중성이 왔지만 못합치는 경우. ㅒㅗ 같은
-                        _makeHangul(i - 1);
-                    }
-                } else { // 아니면 자음이 온 경우.
-                    _makeHangul(i - 1);
-                    stage = 1;
-                }
-            }
-
-            else if (stage === 5) { // 초성이 연속해서 두개 온 상태 ㄺ
-                if (_isJung(code)) { //이번에 중성이면 ㄹ가
-                    _makeHangul(i - 2);
-                    stage = 2;
-                } else {
-                    _makeHangul(i - 1);
-                    stage = 1;
-                }
-            }
-            previous_code = code;
-        }
-        _makeHangul(i - 1);
-        return result.join('');
     };
 
     //
