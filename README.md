@@ -3,7 +3,7 @@
 
 # 자바스크립트 가상 보안 키보드
 
-   Virtual keypad implemented by javascript, jquery
+   Virtual keypad implemented by JavaScript, jQuery
 
    <br>
 
