@@ -15,7 +15,7 @@
    
 ## 사용법
 
-   1. setup
+1. setup
           
          <link rel="stylesheet" type="text/css" href="style.css"/>
          <script src="http://code.jquery.com/jquery-latest.min.js"></script>
@@ -27,7 +27,7 @@
    
    <br>
    
-   2. initialization
+2. initialization
    
           $(...).SVkeyboard.init(userOptions)
           $.SVkeyboard.init(userOptions)
@@ -35,13 +35,13 @@
  userOptions(Object)  
  아래의 옵션들을 변경하여 keyboard의 설정을 바꿀 수 있습니다. 변경하지 않거나 없는 옵션을 넣을 시에는 default 옵션으로 초기화됩니다.
  
- > secure(Boolean) : true시 보안 키보드 기능 활성화 (자판 배열이 임의로 변경됨), 기본 option은 false  
- > _secureKey(String) : 32bit의 임의의 string을 이용하여 입력값이 암호화, 복호화
- > ex) $.svk.init({secure:true, _secureKey:'abcdefghijklmnopqrstuvwxyz123456'});
+ > secure(Boolean) : true시 보안 키보드 기능 활성화 (자판 배열이 임의로 변경됨), 기본 option은 false  
+ >  
+ > _secureKey(String) : 32bit의 임의의 string을 이용하여 입력값이 암호화, 복호화  
+ > ex) $.svk.init({secure:true, _secureKey:'abcdefghijklmnopqrstuvwxyz123456'});  
    
-   <br>
    
-   3. terminalation
+3. terminalation
    
    
             $(...).SVkeyboard.detach()
@@ -51,7 +51,7 @@
    
    <br>
    
-   4. aliasing
+4. aliasing
    
             $.svk.init() === $.SVkeyboard.init()
             $.svk.detach() === $.SVkeyboard.detach()
