@@ -14,6 +14,7 @@
         _defaults: function () {
 
             var _defaultSecure = false,
+                _defaultEncrypt = false,
                 _defaultKey = 'abcdefghijklmnopqrstuvwxyz123456',    // 32bit secure key
                 _numpads = [
                     [['1'], ['2'], ['3'], ['\u232B']],
@@ -37,7 +38,8 @@
                 keyboard = {
                     options: {
                         secure: _defaultSecure,
-                        secureKey: _defaultKey
+                        secureKey: _defaultKey,
+                        encrypt: _defaultEncrypt
                     },
                     layouts: {
                         _qwerty: _qwerty,
@@ -67,7 +69,7 @@
             var options = $.extend({}, this._defaults().options, userOptions),
                 layouts = this._defaults().layouts,
                 prevEvent = null,                                               // previous touch event
-                encrypted,                                                      // encrypted user input data
+                encrypted,
                 generatedHTML,                                                  // html tags composing keyboard layout
                 $body = $('body'),
                 $keyboard;
@@ -167,10 +169,15 @@
                             // Add the character
                             $form.val($form.val() + character);
                             $form.val(Hangul.assemble($form.val()));
-                            encrypted = GibberishAES.aesEncrypt(Hangul.assemble($form.val()), options.secureKey);
-                            $('.tv').val('encode value = ' + encrypted);
-                            encrypted = GibberishAES.aesDecrypt(encrypted, options.secureKey);
-                            $('.tv2').val('decode value = ' + encrypted);
+
+                            if(options.encrypt){
+                                encrypted = _encrypt($form.val(), options.secureKey);
+                                // test case #1
+                                $('.tv').val('encode value = ' + encrypted);
+                                encrypted = _decrypt(encrypted, options.secureKey);
+                                // test case #2
+                                $('.tv2').val('decode value = ' + encrypted);
+                            }
                         });
                         break;
 
@@ -242,10 +249,15 @@
                             // Add the character
                             $form.val($form.val() + character);
                             $form.val(Hangul.a($form.val()));
-                            encrypted = GibberishAES.aesEncrypt(Hangul.assemble($form.val()), options.secureKey);
-                            $('.tv').val('encode value = ' + encrypted);
-                            encrypted = GibberishAES.aesDecrypt(encrypted, options.secureKey);
-                            $('.tv2').val('decode value = ' + encrypted);
+
+                            if(options.encrypt){
+                                encrypted = _encrypt($form.val(), options.secureKey);
+                                // test case #1
+                                $('.tv').val('encode value = ' + encrypted);
+                                encrypted = _decrypt(encrypted, options.secureKey);
+                                // test case #2
+                                $('.tv2').val('decode value = ' + encrypted);
+                            }
                         });
                         break;
 
@@ -312,10 +324,15 @@
 
                             // Add the character
                             $form.val($form.val() + character);
-                            encrypted = GibberishAES.aesEncrypt(Hangul.assemble($form.val()), options.secureKey);
-                            $('.tv').val('encode value = ' + encrypted);
-                            encrypted = GibberishAES.aesDecrypt(encrypted, options.secureKey);
-                            $('.tv2').val('decode value = ' + encrypted);
+
+                            if(options.encrypt){
+                                encrypted = _encrypt($form.val(), options.secureKey);
+                                // test case #1
+                                $('.tv').val('encode value = ' + encrypted);
+                                encrypted = _decrypt(encrypted, options.secureKey);
+                                // test case #2
+                                $('.tv2').val('decode value = ' + encrypted);
+                            }
                         });
                         break;
                 }
@@ -521,6 +538,41 @@
             });
         })();
         return html;
+    };
+
+    //
+    //    _encrypt = function (input, key)
+    //
+    //    read input field's string and encrypt it using AES key value
+    //
+    //    @parameter
+    //    input(String)         : input field's data
+    //    key(String)           : AES key (32bit)
+    //
+    //    @return
+    //    input(String)         : encrypted input data is returned
+    //
+    var _encrypt = function (input, key) {
+        input = GibberishAES.aesEncrypt(input, key);
+        return input;
+    };
+
+
+    //
+    //    _decrypt = function (input, key)
+    //
+    //    read encrypted field's string and decrypt it using AES key value
+    //
+    //    @parameter
+    //    input(String)         : input encrypted field's data
+    //    key(String)           : AES key (32bit)
+    //
+    //    @return
+    //    input(String)         : decrypted input data is returned
+    //
+    var _decrypt = function (input, key) {
+        input = GibberishAES.aesDecrypt(input, key);
+        return input;
     };
 
 })(jQuery);

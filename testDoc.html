@@ -38,10 +38,19 @@
 <script>
     $.svk.init();
     $.svk.init();
-    QUnit.test('duplicatation test', function (assert) {
-        assert.deepEqual($('.keyboard').length, 1, 'when duplicated init call exists, 1 keyboard instance ');
-        //assert.deepEqual($('.keyboard'),null,'test');
-    })
+
+    QUnit.test('function test', function (assert) {
+        var key = $.svk._defaults().options.secureKey;
+        var test = $('#name').val('')[0].value;
+        assert.deepEqual(test,
+            GibberishAES.aesDecrypt(GibberishAES.aesEncrypt(test, key), key),
+            'equal original input text with decryption & encryption'
+        );
+        assert.deepEqual($('.keyboard').length,
+            1,
+            'when duplicated init call exists, 1 keyboard instance ');
+    });
+
 </script>
 </body>
 </html>
