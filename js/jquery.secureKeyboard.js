@@ -264,6 +264,10 @@
                                 character = '\n';
                             }
 
+                            if ($this.hasClass('tab')){
+                                character = '\t';
+                            }
+
                             // Add the character
                             $form.val($form.val() + character);
                             $form.val(Hangul.a($form.val()));
