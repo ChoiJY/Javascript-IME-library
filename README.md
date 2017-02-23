@@ -35,9 +35,12 @@
  userOptions(Object)  
  아래의 옵션들을 변경하여 keyboard의 설정을 바꿀 수 있습니다. 변경하지 않거나 없는 옵션을 넣을 시에는 default 옵션으로 초기화됩니다.
  
- > secure(Boolean) : true시 보안 키보드 기능 활성화 (자판 배열이 임의로 변경됨), 기본 option은 false  
+ > secure(Boolean) : true시 보안 키보드 기능 활성화 (자판 배열이 임의로 변경됨), 기본 option은 false
  >  
- > _secureKey(String) : 32bit의 임의의 string을 이용하여 입력값이 암호화, 복호화  
+ > encrypt(Boolean) : true시 입력한 데이터를 AES를 이용해 암호화, 복호화해서 처리  
+ >
+ > _secureKey(String) : 32bit의 임의의 string을 이용하여 입력값이 암호화, 복호화  
+ >
  > ex) $.svk.init({secure:true, _secureKey:'abcdefghijklmnopqrstuvwxyz123456'});  
    
    
