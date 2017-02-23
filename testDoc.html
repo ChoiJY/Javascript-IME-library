@@ -31,6 +31,7 @@
             <input class="hangulField" type="text" id="hangul"/><br>
             <label for="pwd">숫자 입력(비밀번호) :</label>
             <input class="pwdField" type="password" id="pwd"/><br>
+            <button id="rmvTest" onclick="remove()">remove test result</button>
         </form>
     </fieldset>
 </div>
@@ -50,6 +51,12 @@
             1,
             'when duplicated init call exists, 1 keyboard instance ');
     });
+
+    function remove() {
+        $('#qunit').remove();
+        $('#rmvTest').remove();
+        return;
+    }
 
 </script>
 </body>

@@ -93,6 +93,23 @@
 
             });
 
+            // sense orientation and fit with window size
+            $(window).off('resize').resize(function() {
+                if(('.keyboard').length>0){
+                    if(window.innerHeight>window.innerWidth){       // portrait mode
+                        document.body.scrollTop -= $keyboard.height();
+                        $('.keyboard').css('top', window.innerHeight-$('.keyboard').height());
+                    }
+                    else{                                           // landscape mode
+                        document.body.scrollTop += $keyboard.height();
+                        $('.keyboard').css('top', window.innerHeight - $('.keyboard').height());
+                    }
+                }
+                else{
+                    $('.keyboard').css('top', window.innerHeight);
+                }
+            });
+
             $body.off('click').on('click', function (event) {
 
                 switch (event.target.className) {
@@ -114,6 +131,7 @@
                             if ((window.innerHeight - event.clientY) > 300) {
                                 $keyboard.append(generatedHTML);
                                 $keyboard.css('top', window.innerHeight - $keyboard.height());
+
                             }
                             // if spaces is not sufficient, scrolled as keyboard size and created under input form
                             else {
@@ -244,6 +262,10 @@
 
                             if ($this.hasClass('enter')) {
                                 character = '\n';
+                            }
+
+                            if ($this.hasClass('tab')){
+                                character = '\t';
                             }
 
                             // Add the character
