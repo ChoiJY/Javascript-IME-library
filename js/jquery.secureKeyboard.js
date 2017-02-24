@@ -35,6 +35,12 @@
                     [[''], [''], ['z', 'Z', 'ㅋ'], ['x', 'X', 'ㅌ'], ['c', 'C', 'ㅊ'], ['v', 'V', 'ㅍ'], ['b', 'B', 'ㅠ'], ['n', 'N', 'ㅜ'], ['m', 'M', 'ㅡ'], [''], [''], ['SHIFT']],
                     [['SPACE'], ['\uD83C\uDF10']]
                 ],
+                _qwertyV2 = [
+                    [['q', 'Q', 'ㅂ', 'ㅃ', '1', '!'], ['w', 'W', 'ㅈ', 'ㅉ', '2', '@'], ['e', 'E', 'ㄷ', 'ㄸ', '3', '#'], ['r', 'R', 'ㄱ', 'ㄲ', '4', '$'], ['t', 'T', 'ㅅ', 'ㅆ', '5', '%'], ['y', 'Y', 'ㅛ', '6', '^'], ['u', 'U', 'ㅕ', '7', '&'], ['i', 'I', 'ㅑ', '8', '*'], ['o', 'O', 'ㅐ', 'ㅒ', '9', '('], ['p', 'P', 'ㅔ', 'ㅖ', '0', ')'], [''], ['\u232B']],
+                    [[''], ['a', 'A', 'ㅁ', '`', '~'], ['s', 'S', 'ㄴ', '-', '_'], ['d', 'D', 'ㅇ', '=', '+'], ['f', 'F', 'ㄹ', '[', '{'], ['g', 'G', 'ㅎ', ']', '}'], ['h', 'H', 'ㅗ', '\\', '|'], ['j', 'J', 'ㅓ', ';', ':'], ['k', 'K', 'ㅏ', '\'', '"'], ['l', 'L', 'ㅣ', ',', '<'], [''], ['ENTER']],
+                    [[''], [''], ['z', 'Z', 'ㅋ', '.', '>'], ['x', 'X', 'ㅌ', '/', '?'], ['c', 'C', 'ㅊ', '\u2606','\u2606'], ['v', 'V', 'ㅍ', '\u00A9', '\u00A9'], ['b', 'B', 'ㅠ', '\u2661', '\u2661'], ['n', 'N', 'ㅜ', '\u221A', '\u221A'], ['m', 'M', 'ㅡ', '\u00B0', '\u00B0'], [''], [''], ['SHIFT']],
+                    [['SPACE'], ['\u203B'], ['\uD83C\uDF10']]
+                ],
                 keyboard = {
                     options: {
                         secure: _defaultSecure,
@@ -42,6 +48,7 @@
                         encrypt: _defaultEncrypt
                     },
                     layouts: {
+                        _qwerty2: _qwertyV2,
                         _qwerty: _qwerty,
                         _simpleQwerty: _simpleQwerty,
                         _numpads: _numpads
@@ -94,18 +101,18 @@
             });
 
             // sense orientation and fit with window size
-            $(window).off('resize').resize(function() {
-                if(('.keyboard').length>0){
-                    if(window.innerHeight>window.innerWidth){       // portrait mode
+            $(window).off('resize').resize(function () {
+                if (('.keyboard').length > 0) {
+                    if (window.innerHeight > window.innerWidth) {       // portrait mode
                         document.body.scrollTop -= $keyboard.height();
-                        $('.keyboard').css('top', window.innerHeight-$('.keyboard').height());
+                        $('.keyboard').css('top', window.innerHeight - $('.keyboard').height());
                     }
-                    else{                                           // landscape mode
+                    else {                                           // landscape mode
                         document.body.scrollTop += $keyboard.height();
                         $('.keyboard').css('top', window.innerHeight - $('.keyboard').height());
                     }
                 }
-                else{
+                else {
                     $('.keyboard').css('top', window.innerHeight);
                 }
             });
@@ -158,12 +165,17 @@
 
                             if ($this.hasClass('shift')) {
                                 $('.letter > span > span').toggleClass('upper');
-                                return '';
+                                return;
                             }
 
                             if ($this.hasClass('local')) {
                                 $('.letter > span').toggleClass('kr');
-                                return '';
+                                return;
+                            }
+
+                            if ($this.hasClass('specials')) {
+                                $('.letter > span').toggleClass('others');
+                                return;
                             }
 
                             if ($this.hasClass('del')) {
@@ -188,7 +200,7 @@
                             $form.val($form.val() + character);
                             $form.val(Hangul.assemble($form.val()));
 
-                            if(options.encrypt){
+                            if (options.encrypt) {
                                 encrypted = _encrypt($form.val(), options.secureKey);
                                 // test case #1
                                 $('.tv').val('encode value = ' + encrypted);
@@ -203,10 +215,10 @@
 
                         $('.hangulField').blur();     // mobile keypad not exist
                         if (options.secure) {
-                            generatedHTML = _writeHTML('symbol', _randomLayout('symbol', layouts._qwerty));
+                            generatedHTML = _writeHTML('symbol', _randomLayout('symbol', layouts._qwerty2));
                         }
                         else {
-                            generatedHTML = _writeHTML('symbol', layouts._qwerty);
+                            generatedHTML = _writeHTML('symbol', layouts._qwerty2);
                         }
 
                         // 기존에 키보드가 없는 경우
@@ -264,7 +276,7 @@
                                 character = '\n';
                             }
 
-                            if ($this.hasClass('tab')){
+                            if ($this.hasClass('tab')) {
                                 character = '\t';
                             }
 
@@ -272,7 +284,7 @@
                             $form.val($form.val() + character);
                             $form.val(Hangul.a($form.val()));
 
-                            if(options.encrypt){
+                            if (options.encrypt) {
                                 encrypted = _encrypt($form.val(), options.secureKey);
                                 // test case #1
                                 $('.tv').val('encode value = ' + encrypted);
@@ -347,7 +359,7 @@
                             // Add the character
                             $form.val($form.val() + character);
 
-                            if(options.encrypt){
+                            if (options.encrypt) {
                                 encrypted = _encrypt($form.val(), options.secureKey);
                                 // test case #1
                                 $('.tv').val('encode value = ' + encrypted);
@@ -440,14 +452,14 @@
     //
     //    @parameter
     //
-    //    keyboardType(String) : number(only numbers) ,
-    //                           letter(only characters) ,
-    //                           symbol(basic qwerty layout)
+    //    keyboardType(String)  : number(only numbers) ,
+    //                            letter(only characters) ,
+    //                            symbol(basic qwerty layout)
     //
-    //    layout(Object)       : keyboard layout array object
+    //    layout(Array)         : keyboard layout array
     //
     //    @return
-    //    html : html tags derived from keyboard which is selected from parameter
+    //    html(String)          : html tags derived from keyboard which is selected from parameter
     //
 
     var _writeHTML = function (keyboardType, layout) {
@@ -469,6 +481,10 @@
 
                             case '\u232B':
                                 html += ' del lastitem">' + item;
+                                break;
+
+                            case '\u203B':
+                                html += ' specials">' + item;
                                 break;
 
                             case '\uD83C\uDF10':
@@ -546,6 +562,45 @@
                                         }
                                         else if (idx === 2) {
                                             html += '<span class="kr"><span class="lower">' + item + '</span>';
+                                        }
+                                        else {
+                                            html += '<span class="upper">' + item + '</span></span></span>';
+                                        }
+                                    }
+                                    if (ary.length === 5) {
+                                        if (idx === 0) {
+                                            html += ' k">' +
+                                                '<span class="en"><span class="lower">' + item + '</span>';
+                                        }
+                                        else if (idx === 1) {
+                                            html += '<span class="upper">' + item + '</span></span>';
+                                        }
+                                        else if(idx === 2){
+                                            html += '<span class="kr">' + item + '</span>';
+                                        }
+                                        else if(idx === 3){
+                                            html += '<span class="others"><span class="lower">' + item +'</span>';
+                                        }
+                                        else{
+                                            html += '<span class="upper">' + item + '</span></span></span>';
+                                        }
+                                    }
+                                    if (ary.length === 6) {
+                                        if (idx === 0) {
+                                            html += ' k">' +
+                                                '<span class="en"><span class="lower">' + item + '</span>';
+                                        }
+                                        else if (idx === 1) {
+                                            html += '<span class="upper">' + item + '</span></span>';
+                                        }
+                                        else if (idx === 2) {
+                                            html += '<span class="kr"><span class="lower">' + item + '</span>';
+                                        }
+                                        else if(idx === 3){
+                                            html += '<span class="upper">' + item + '</span></span>';
+                                        }
+                                        else if(idx === 4){
+                                            html += '<span class="others"><span class="lower">' + item +'</span>';
                                         }
                                         else {
                                             html += '<span class="upper">' + item + '</span></span></span>';
