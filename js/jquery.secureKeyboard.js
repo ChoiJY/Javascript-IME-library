@@ -77,6 +77,8 @@
                 layouts = this._defaults().layouts,
                 prevEvent = null,                                               // previous touch event
                 encrypted,
+                state =false,
+                state2 = false,
                 generatedHTML,                                                  // html tags composing keyboard layout
                 $body = $('body'),
                 $keyboard;
@@ -173,11 +175,6 @@
                                 return;
                             }
 
-                            if ($this.hasClass('specials')) {
-                                $('.letter > span').toggleClass('others');
-                                return;
-                            }
-
                             if ($this.hasClass('del')) {
                                 currentText = $form.val();
                                 $form.val(currentText.substr(0, currentText.length - 1));
@@ -246,18 +243,21 @@
 
                         // Sense keyboard li's contents
                         $('.symbol').on('click', function () {
-
                             var $this = $(this),
                                 $form = $(event.target),
                                 currentText,
                                 character = this.innerText;
 
                             if ($this.hasClass('shift')) {
-                                $('.symbol > span > span').toggleClass('upper');
+                                $('.k > span > span').toggleClass('upper');
                                 return '';
                             }
 
                             if ($this.hasClass('local')) {
+                                state = !state;
+                                if(state2){
+                                    $('.k > span').toggleClass('others');
+                                }
                                 $('.k > span').toggleClass('kr');
                                 return '';
                             }
@@ -278,6 +278,15 @@
 
                             if ($this.hasClass('tab')) {
                                 character = '\t';
+                            }
+
+                            if ($this.hasClass('specials')) {
+                                if(state){
+                                    $('.k > span').toggleClass('kr');
+                                }
+                                state2 = !state2;
+                                $('.k > span').toggleClass('others');
+                                return '';
                             }
 
                             // Add the character
@@ -339,6 +348,7 @@
                                 $form.val(currentText.substr(0, currentText.length - 1));
                                 return '';
                             }
+
                             if ($this.hasClass('reset')) {
                                 currentText = $form.val();
                                 $form.val(currentText.substr(currentText.length));

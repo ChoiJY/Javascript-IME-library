@@ -58,6 +58,10 @@ form{
     display: none;
 }
 
+.others{
+    display:none;
+}
+
 .upper{
     display: none;
 }
@@ -77,22 +81,22 @@ form{
 .symbol{
     float: left;
     margin: 0 0 1% 0;
-    width: 6.5%;
+    width: 8%;
     height: 40px;
     line-height: 40px;
-    background: #fff;
-    border: 1px ridge black;
-    font-size: 12px;
+    background: #0d1c30;
+    color: ghostwhite;
+    border: 2px ridge white;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
 }
 
 .symbol.null{
-    width: 3.5%;
+    width: 4%;
 }
 
 .symbol.del {
-    width: 12%;
+    width: 16%;
     font-size: 15px;
     background: darkgray;
 }
@@ -103,12 +107,12 @@ form{
 }
 
 .symbol.enter{
-    width: 18%;
+    width: 20%;
     background: darkgray;
 }
 
 .symbol.shift{
-    width: 21%;
+    width: 28%;
     background: darkgray;
 }
 
@@ -118,8 +122,14 @@ form{
 }
 
 .symbol.local{
-    width: 21%;
+    width: 10.5%;
     background: darkgray;
+}
+
+.symbol.specials{
+    width: 10.5%;
+    background: darkgray;
+    color: whitesmoke;
 }
 
 span[class="off"], span[class="on"]{
