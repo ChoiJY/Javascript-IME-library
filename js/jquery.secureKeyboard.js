@@ -425,32 +425,37 @@
 
                 lineItem.forEach(function (ary, index) {
 
-                    rNum = Math.floor(Math.random() * index);
+                    if(lineIdx !== changedKeyset.length-1) {
 
-                    while (rNum > (lineItem.length - 2)) {
-                        rNum = Math.floor(Math.random() * (index));
-                    }
+                        rNum = Math.floor(Math.random() * index);
 
-                    if (index !== lineItem.length - 1) {
+                        while (rNum > (lineItem.length - 2)) {
+                            rNum = Math.floor(Math.random() * (index));
+                        }
 
-                        temp = lineItem[index];
+                        if (index !== lineItem.length - 1) {
 
-                        switch (keyboardType) {
+                            temp = lineItem[index];
 
-                            case 'number':      // numpad는 random option 적용 시 모든 배치가 바뀌기 때문에
+                            switch (keyboardType) {
 
-                                lineItem[index] = changedKeyset[rNum2][rNum];
-                                changedKeyset[rNum2][rNum] = temp;
-                                break;
+                                case 'number':      // numpad는 random option 적용 시 모든 배치가 바뀌기 때문에
 
-                            default:            // 다른 키보드의 경우에는 키보드의 같은 라인만 랜덤 배치
+                                    lineItem[index] = changedKeyset[rNum2][rNum];
+                                    changedKeyset[rNum2][rNum] = temp;
+                                    break;
 
-                                lineItem[index] = lineItem[rNum];
-                                lineItem[rNum] = temp;
+                                default:            // 다른 키보드의 경우에는 키보드의 같은 라인만 랜덤 배치
+
+                                    lineItem[index] = lineItem[rNum];
+                                    lineItem[rNum] = temp;
+                            }
                         }
                     }
                 });
+
             });
+
         })();
         return changedKeyset;
     };
