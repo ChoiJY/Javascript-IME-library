@@ -1,9 +1,11 @@
 @charset "utf-8";
+
 *{
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 }
+
 
 body{
     position: relative;
@@ -12,22 +14,6 @@ body{
     background: aliceblue;
     margin: 0;
 }
-
-form{
-    position: relative;
-    height: 5%;
-}
-
-.Screen{
-    position: relative;
-    height: 1500px;
-    width: 80%;
-    margin: 10% auto;
-    display: table;
-    background: ghostwhite;
-    padding: 2%;
-}
-
 .keyboard{
     z-index: 10000;
     opacity: 1;

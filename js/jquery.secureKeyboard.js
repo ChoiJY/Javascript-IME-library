@@ -85,6 +85,7 @@
 
             // prevent mobile double tap
             $(window).off('touchstart').on('touchstart', function (event) {
+
                 prevEvent = event.timeStamp;
 
                 $(window).off('touchend').on('touchend', function (event) {
@@ -93,16 +94,20 @@
                     if (event.timeStamp - prevEvent < 200) {
                         event.preventDefault();
                     }
+
                 });
             });
 
             // sense orientation and fit with window size
             $(window).off('resize').resize(function () {
+
                 if (('.keyboard').length > 0) {
+
                     if (window.innerHeight > window.innerWidth) {       // portrait mode
                         document.body.scrollTop -= $keyboard.height();
                         $('.keyboard').css('top', window.innerHeight - $('.keyboard').height());
                     }
+
                     else {                                           // landscape mode
                         document.body.scrollTop += $keyboard.height();
                         $('.keyboard').css('top', window.innerHeight - $('.keyboard').height());
