@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width" initial-scale="1.0" maximum-scale="1.0" user-scalable="no">
+    <meta name="viewport" content="width=device-width" initial-scale="1.0" minimum-scale="1.0" maximum-scale="1.0" user-scalable="no">
     <title>testDoc</title>
     <link rel="stylesheet" type="text/css" href="style.css"/>
     <link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-2.1.1.css">
@@ -26,11 +26,11 @@
     <fieldset>
         <form class="input1" method="post">
             <label for="name">단어만 :</label>
-            <input class="nameField" type="text" id="name"/><br>
+            <input class="nameField" type="text" id="name" readonly="readonly"/><br>
             <label for="hangul">풀 자판 :</label>
-            <input class="hangulField" type="text" id="hangul"/><br>
+            <input class="hangulField" type="text" id="hangul" readonly="readonly"/><br>
             <label for="pwd">숫자 입력(비밀번호) :</label>
-            <input class="pwdField" type="password" id="pwd"/><br>
+            <input class="pwdField" type="password" id="pwd" readonly="readonly"/><br>
             <button id="rmvTest" onclick="remove()">remove test result</button>
         </form>
     </fieldset>
@@ -38,8 +38,6 @@
 
 <script>
     $.svk.init();
-    $.svk.init();
-
     QUnit.test('function test', function (assert) {
         var key = $.svk._defaults().options.secureKey;
         var test = $('#name').val('')[0].value;
@@ -57,6 +55,7 @@
         $('#rmvTest').remove();
         return;
     }
+
 
 </script>
 </body>

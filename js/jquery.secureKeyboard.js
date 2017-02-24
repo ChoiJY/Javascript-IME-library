@@ -3,6 +3,7 @@
  *
  **/
 
+
 (function ($) {
 
     'use strict';
@@ -83,29 +84,31 @@
             $keyboard = $('.keyboard');
 
             // prevent mobile double tap
-            $body.off('touchstart').on('touchstart', function (event) {
-
-                // touch start time - previous touch start time < 200ms
-                if (event.timeStamp - prevEvent < 200) {
-                    event.preventDefault();
-                }
+            $(window).off('touchstart').on('touchstart', function (event) {
                 prevEvent = event.timeStamp;
 
+                $(window).off('touchend').on('touchend', function (event) {
+
+                    // touch start time - previous touch start time < 200ms
+                    if (event.timeStamp - prevEvent < 200) {
+                        event.preventDefault();
+                    }
+                });
             });
 
             // sense orientation and fit with window size
-            $(window).off('resize').resize(function() {
-                if(('.keyboard').length>0){
-                    if(window.innerHeight>window.innerWidth){       // portrait mode
+            $(window).off('resize').resize(function () {
+                if (('.keyboard').length > 0) {
+                    if (window.innerHeight > window.innerWidth) {       // portrait mode
                         document.body.scrollTop -= $keyboard.height();
-                        $('.keyboard').css('top', window.innerHeight-$('.keyboard').height());
+                        $('.keyboard').css('top', window.innerHeight - $('.keyboard').height());
                     }
-                    else{                                           // landscape mode
+                    else {                                           // landscape mode
                         document.body.scrollTop += $keyboard.height();
                         $('.keyboard').css('top', window.innerHeight - $('.keyboard').height());
                     }
                 }
-                else{
+                else {
                     $('.keyboard').css('top', window.innerHeight);
                 }
             });
@@ -188,7 +191,7 @@
                             $form.val($form.val() + character);
                             $form.val(Hangul.assemble($form.val()));
 
-                            if(options.encrypt){
+                            if (options.encrypt) {
                                 encrypted = _encrypt($form.val(), options.secureKey);
                                 // test case #1
                                 $('.tv').val('encode value = ' + encrypted);
@@ -202,6 +205,7 @@
                     case 'hangulField':
 
                         $('.hangulField').blur();     // mobile keypad not exist
+
                         if (options.secure) {
                             generatedHTML = _writeHTML('symbol', _randomLayout('symbol', layouts._qwerty));
                         }
@@ -220,7 +224,7 @@
                             // 폼 아래에 충분한 공간이 없을 경우에는 키보드 만큼 스크롤을 내리고, 하단에 키보드를 생성시킨다.
                             else {
                                 $keyboard.append(generatedHTML);
-                                document.body.scrollTop = $keyboard.height();
+                                document.body.scrollTop += $keyboard.height();
                                 $keyboard.css('top', window.innerHeight - $keyboard.height());
                             }
                         }
@@ -264,15 +268,11 @@
                                 character = '\n';
                             }
 
-                            if ($this.hasClass('tab')){
-                                character = '\t';
-                            }
-
                             // Add the character
                             $form.val($form.val() + character);
                             $form.val(Hangul.a($form.val()));
 
-                            if(options.encrypt){
+                            if (options.encrypt) {
                                 encrypted = _encrypt($form.val(), options.secureKey);
                                 // test case #1
                                 $('.tv').val('encode value = ' + encrypted);
@@ -304,10 +304,11 @@
                             // attach keyboard to down side form
                             else {
                                 $keyboard.append(generatedHTML);
-                                document.body.scrollTop = $keyboard.height();
+                                document.body.scrollTop += $keyboard.height();
                                 $keyboard.css('top', window.innerHeight - $keyboard.height());
                             }
                         }
+
                         else {
                             $keyboard.css('top', window.innerHeight);
                             document.body.scrollTop -= $keyboard.height();
@@ -347,7 +348,7 @@
                             // Add the character
                             $form.val($form.val() + character);
 
-                            if(options.encrypt){
+                            if (options.encrypt) {
                                 encrypted = _encrypt($form.val(), options.secureKey);
                                 // test case #1
                                 $('.tv').val('encode value = ' + encrypted);
@@ -403,28 +404,27 @@
 
                 lineItem.forEach(function (ary, index) {
 
-                    rNum = Math.floor(Math.random() * index);
+                    if (keyboardType === 'number') {
 
-                    while (rNum > (lineItem.length - 2)) {
-                        rNum = Math.floor(Math.random() * (index));
+                        rNum = Math.floor(Math.random() * index);
+
+                        while (rNum > (lineItem.length - 2)) {
+                            rNum = Math.floor(Math.random() * (index));
+                        }
+
+                        if (index !== lineItem.length - 1) {
+                            temp = lineItem[index];
+                            lineItem[index] = changedKeyset[rNum2][rNum];
+                            changedKeyset[rNum2][rNum] = temp;
+                        }
+
                     }
 
-                    if (index !== lineItem.length - 1) {
-
-                        temp = lineItem[index];
-
-                        switch (keyboardType) {
-
-                            case 'number':      // numpad는 random option 적용 시 모든 배치가 바뀌기 때문에
-
-                                lineItem[index] = changedKeyset[rNum2][rNum];
-                                changedKeyset[rNum2][rNum] = temp;
-                                break;
-
-                            default:            // 다른 키보드의 경우에는 키보드의 같은 라인만 랜덤 배치
-
-                                lineItem[index] = lineItem[rNum];
-                                lineItem[rNum] = temp;
+                    else {
+                        if (lineItem[index][0] === '') {
+                            rNum = Math.floor(Math.random() * lineItem.length - 1);
+                            lineItem.splice(index, 1);
+                            lineItem.splice(rNum, 0, ['']);
                         }
                     }
                 });
