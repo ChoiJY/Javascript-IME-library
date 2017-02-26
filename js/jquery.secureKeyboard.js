@@ -38,7 +38,7 @@
                 _qwertyV2 = [
                     [['q', 'Q', 'ㅂ', 'ㅃ', '1', '!'], ['w', 'W', 'ㅈ', 'ㅉ', '2', '@'], ['e', 'E', 'ㄷ', 'ㄸ', '3', '#'], ['r', 'R', 'ㄱ', 'ㄲ', '4', '$'], ['t', 'T', 'ㅅ', 'ㅆ', '5', '%'], ['y', 'Y', 'ㅛ', '6', '^'], ['u', 'U', 'ㅕ', '7', '&'], ['i', 'I', 'ㅑ', '8', '*'], ['o', 'O', 'ㅐ', 'ㅒ', '9', '('], ['p', 'P', 'ㅔ', 'ㅖ', '0', ')'], [''], ['\u232B']],
                     [[''], ['a', 'A', 'ㅁ', '`', '~'], ['s', 'S', 'ㄴ', '-', '_'], ['d', 'D', 'ㅇ', '=', '+'], ['f', 'F', 'ㄹ', '[', '{'], ['g', 'G', 'ㅎ', ']', '}'], ['h', 'H', 'ㅗ', '\\', '|'], ['j', 'J', 'ㅓ', ';', ':'], ['k', 'K', 'ㅏ', '\'', '"'], ['l', 'L', 'ㅣ', ',', '<'], [''], ['ENTER']],
-                    [[''], [''], ['z', 'Z', 'ㅋ', '.', '>'], ['x', 'X', 'ㅌ', '/', '?'], ['c', 'C', 'ㅊ', '\u2606','\u2606'], ['v', 'V', 'ㅍ', '\u00A9', '\u00A9'], ['b', 'B', 'ㅠ', '\u2661', '\u2661'], ['n', 'N', 'ㅜ', '\u221A', '\u221A'], ['m', 'M', 'ㅡ', '\u00B0', '\u00B0'], [''], [''], ['SHIFT']],
+                    [[''], [''], ['z', 'Z', 'ㅋ', '.', '>'], ['x', 'X', 'ㅌ', '/', '?'], ['c', 'C', 'ㅊ', '\u2606', '\u2606'], ['v', 'V', 'ㅍ', '\u00A9', '\u00A9'], ['b', 'B', 'ㅠ', '\u2661', '\u2661'], ['n', 'N', 'ㅜ', '\u221A', '\u221A'], ['m', 'M', 'ㅡ', '\u00B0', '\u00B0'], [''], [''], ['SHIFT']],
                     [['SPACE'], ['\u203B'], ['\uD83C\uDF10']]
                 ],
                 keyboard = {
@@ -77,7 +77,7 @@
                 layouts = this._defaults().layouts,
                 prevEvent = null,                                               // previous touch event
                 encrypted,
-                state =false,
+                state = false,
                 state2 = false,
                 generatedHTML,                                                  // html tags composing keyboard layout
                 $body = $('body'),
@@ -255,7 +255,7 @@
 
                             if ($this.hasClass('local')) {
                                 state = !state;
-                                if(state2){
+                                if (state2) {
                                     $('.k > span').toggleClass('others');
                                 }
                                 $('.k > span').toggleClass('kr');
@@ -281,7 +281,7 @@
                             }
 
                             if ($this.hasClass('specials')) {
-                                if(state){
+                                if (state) {
                                     $('.k > span').toggleClass('kr');
                                 }
                                 state2 = !state2;
@@ -425,7 +425,7 @@
 
                 lineItem.forEach(function (ary, index) {
 
-                    if(lineIdx !== changedKeyset.length-1) {
+                    if (lineIdx !== changedKeyset.length - 1) {
 
                         rNum = Math.floor(Math.random() * index);
 
@@ -590,13 +590,13 @@
                                         else if (idx === 1) {
                                             html += '<span class="upper">' + item + '</span></span>';
                                         }
-                                        else if(idx === 2){
+                                        else if (idx === 2) {
                                             html += '<span class="kr">' + item + '</span>';
                                         }
-                                        else if(idx === 3){
-                                            html += '<span class="others"><span class="lower">' + item +'</span>';
+                                        else if (idx === 3) {
+                                            html += '<span class="others"><span class="lower">' + item + '</span>';
                                         }
-                                        else{
+                                        else {
                                             html += '<span class="upper">' + item + '</span></span></span>';
                                         }
                                     }
@@ -611,11 +611,11 @@
                                         else if (idx === 2) {
                                             html += '<span class="kr"><span class="lower">' + item + '</span>';
                                         }
-                                        else if(idx === 3){
+                                        else if (idx === 3) {
                                             html += '<span class="upper">' + item + '</span></span>';
                                         }
-                                        else if(idx === 4){
-                                            html += '<span class="others"><span class="lower">' + item +'</span>';
+                                        else if (idx === 4) {
+                                            html += '<span class="others"><span class="lower">' + item + '</span>';
                                         }
                                         else {
                                             html += '<span class="upper">' + item + '</span></span></span>';
