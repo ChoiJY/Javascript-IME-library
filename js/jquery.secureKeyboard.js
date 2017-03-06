@@ -172,6 +172,7 @@
 
                             if ($this.hasClass('local')) {
                                 $('.letter > span').toggleClass('kr');
+                                state = true;
                                 return;
                             }
 
